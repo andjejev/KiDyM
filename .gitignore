@@ -18,10 +18,7 @@
 *.o
 *.obj
 
-# не обрабатывать файлы, имя которых заканчивается на .txt
 *.txt
-# НО отслеживать файл lib.txt, несмотря на то, что мы игнорируем все .txt файлы с помощью предыдущего правила
-!lib.txt
 
 !KiDyM/KiDyMCommon/TablW/ParamPrintE.txt
 !KiDyM/KiDyMCommon/TablW/ParamPrintR.txt
