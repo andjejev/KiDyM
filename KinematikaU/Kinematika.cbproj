@@ -268,7 +268,7 @@
 						<Debugging Name="DebugSourceDirs"/>
 					</Debugging>
 					<Parameters>
-						<Parameters Name="RunParams">D:\2019\Лабы\Лабы 7 сем\КиДиМ\Test\K1.KDM OWN</Parameters>
+						<Parameters Name="RunParams">..\..\Test\K1\K1.KDM OWN</Parameters>
 						<Parameters Name="Launcher"/>
 						<Parameters Name="UseLauncher">False</Parameters>
 						<Parameters Name="DebugCWD"/>

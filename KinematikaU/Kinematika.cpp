@@ -5,6 +5,7 @@
 #include <tchar.h>
 #include <io.h>
 #include <stdio.h>
+#include <dir.h>
 //---------------------------------------------------------------------------
 USEFORM("Kinema.cpp", FormKinema);
 USEFORM("..\KiDyMCommon\Diagnostika\FormPrRE.cpp", FormPrintRichEdit);
@@ -37,7 +38,7 @@ WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPSTR ARGS, int){
  if((s=strstr(ARGS,"Own"))||(s=strstr(ARGS,"OWN"))){
   *--s='\0'; OWN=true;
  }
- L=strlen(ARGS);
+ L=strlen(ARGS); //_wgetcwd(CurrDir,255);
  if(ARGS[L-1]=='\"') ARGS[L-1]='\0';
  if(ARGS[0]=='\"') SS=ARGS+1;
  else SS=ARGS;
