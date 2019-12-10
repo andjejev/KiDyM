@@ -1,0 +1,202 @@
+object FormToPrn: TFormToPrn
+  Left = 235
+  Top = 120
+  BorderStyle = bsDialog
+  Caption = #1053#1072' '#1087#1088#1080#1085#1090#1077#1088
+  ClientHeight = 105
+  ClientWidth = 450
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -14
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  Icon.Data = {
+    0000010002002020100000000000E80200002600000010101000000000002801
+    00000E0300002800000020000000400000000100040000000000800200000000
+    0000000000000000000000000000000000000000800000800000008080008000
+    00008000800080800000C0C0C000808080000000FF0000FF000000FFFF00FF00
+    0000FF00FF00FFFF0000FFFFFF00000000000000088888888888888000000000
+    0000000000000000000000080000000000000000777777777777787080000000
+    0000000777777777777778770800000000000008888888888888888770800000
+    0000088888888888888888887708000000000877777777777777778787080000
+    000008777777777BBBB777877808088888888088888888888887778777080000
+    0000000000000008888888887770877777777777777770877777778787708FFF
+    FFFFFFFFFFFF70877777778778708F11F1111111111F7000000000F877808F11
+    F1111111111F708FFFFFF80F87708FFFFFFFFFFFFFFF708FFFFFFF80F8708F11
+    F1111111111F7000000FFFF088808F11F1111111111F708FFFFFFFF080008FFF
+    FFFFFFFFFFFF708FFFFFFFF080008F11F1111111111F700000000FF080008F11
+    F1111111111F708FFFFFFFFF08008FFFFFFFFFFFFFFF708FFFFFFFFF08008F11
+    F1111111111F70888888888880008F11F1111111111F70800000000000008FFF
+    FFFFFFFFFFFF70800000000000008F11F1111111111F70800000000000008F11
+    F1111111111F70800000000000008FFFFFFFFFFF800000800000000000008F11
+    F11111118FF780000000000000008F11F11111118F7800000000000000008FFF
+    FFFFFFFF878000000000000000008FFFFFFFFFFF880000000000000000008888
+    8888888888000000000000000000FFF8001FFFF0000FFFE00007FFC00003FFC0
+    0001FF800000FF800000FF800000800000000000000000000000000000000000
+    0000000000000000000000000001000000070000000700000007000000030000
+    00030000000700001FFF00001FFF00001FFF00001FFF00001FFF00003FFF0000
+    7FFF0000FFFF0001FFFF0003FFFF280000001000000020000000010004000000
+    0000C00000000000000000000000000000000000000000000000000080000080
+    000000808000800000008000800080800000C0C0C000808080000000FF0000FF
+    000000FFFF00FF000000FF00FF00FFFF0000FFFFFF0000000000888888000000
+    0000000000800000008777777800088888800088887000000000087777008777
+    7777008887808FFFFFF708FFF0008F1111170888F0008FFFFFF700FFFF008F11
+    1117088888808FFFFFF7080000008F111117080000008FFFF000000000008F11
+    F7F8000000008FFFF780000000008888880000000000FF030000FE010000FC00
+    000080000000000000000000000000010000000300000001000000010000003F
+    0000003F0000007F000000FF000001FF000003FF0000}
+  OldCreateOrder = False
+  OnShow = FormShow
+  PixelsPerInch = 120
+  TextHeight = 16
+  object Label1: TLabel
+    Left = 16
+    Top = 32
+    Width = 7
+    Height = 16
+    Caption = #1089
+  end
+  object Label2: TLabel
+    Left = 96
+    Top = 32
+    Width = 16
+    Height = 16
+    Caption = #1087#1086
+  end
+  object Label3: TLabel
+    Left = 80
+    Top = 0
+    Width = 65
+    Height = 16
+    Caption = #1057#1090#1088#1072#1085#1080#1094#1099
+  end
+  object GroupBoxCopies: TGroupBox
+    Left = 220
+    Top = 0
+    Width = 229
+    Height = 105
+    Caption = ' '#1050#1086#1087#1080#1080' '
+    TabOrder = 0
+    object LabelCount: TLabel
+      Left = 130
+      Top = 22
+      Width = 82
+      Height = 16
+      Caption = #1063#1080#1089#1083#1086' '#1082#1086#1087#1080#1081
+    end
+    object ImageCollate: TImage
+      Left = 10
+      Top = 18
+      Width = 109
+      Height = 80
+    end
+    object CheckBoxCollate: TCheckBox
+      Left = 128
+      Top = 76
+      Width = 97
+      Height = 21
+      Caption = #1056#1072#1079#1086#1073#1088#1072#1090#1100
+      TabOrder = 0
+      OnClick = CheckBoxCollateClick
+    end
+    object UpDownCount: TUpDown
+      Left = 185
+      Top = 48
+      Width = 21
+      Height = 26
+      Associate = EditCount
+      Min = 1
+      Position = 1
+      TabOrder = 1
+      Thousands = False
+      Wrap = True
+    end
+    object EditCount: TEdit
+      Left = 144
+      Top = 48
+      Width = 41
+      Height = 21
+      AutoSelect = False
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 2
+      Text = '1'
+    end
+  end
+  object ButtonOk: TButton
+    Left = 153
+    Top = 70
+    Width = 64
+    Height = 31
+    Caption = 'OK'
+    Default = True
+    TabOrder = 3
+    OnClick = ButtonOkClick
+  end
+  object ButtonCancel: TButton
+    Left = 9
+    Top = 70
+    Width = 64
+    Height = 31
+    Cancel = True
+    Caption = #1054#1090#1084#1077#1085#1072
+    TabOrder = 1
+    OnClick = ButtonCancelClick
+  end
+  object ButtonHelp: TButton
+    Left = 80
+    Top = 70
+    Width = 65
+    Height = 31
+    Caption = #1055#1086#1084#1086#1097#1100
+    TabOrder = 2
+    OnClick = ButtonHelpClick
+  end
+  object UpDownBegin: TUpDown
+    Left = 73
+    Top = 32
+    Width = 21
+    Height = 26
+    Associate = EditBegin
+    Min = 1
+    Position = 1
+    TabOrder = 4
+    Thousands = False
+    Wrap = True
+  end
+  object UpDownEnd: TUpDown
+    Left = 161
+    Top = 32
+    Width = 20
+    Height = 26
+    Associate = EditEnd
+    Min = 1
+    Position = 1
+    TabOrder = 5
+    Thousands = False
+    Wrap = True
+  end
+  object EditBegin: TEdit
+    Left = 32
+    Top = 32
+    Width = 41
+    Height = 21
+    AutoSelect = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 6
+    Text = '1'
+  end
+  object EditEnd: TEdit
+    Left = 121
+    Top = 32
+    Width = 40
+    Height = 21
+    AutoSelect = False
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 7
+    Text = '1'
+  end
+end
