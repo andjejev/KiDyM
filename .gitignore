@@ -1,4 +1,101 @@
 # Prerequisites
+
+*.d
+*.ddp
+*.dfm
+
+*.dat
+
+*.OUT
+*.q
+
+# Compiled Object files
+
+*.slo
+
+*.lo
+
+*.o
+*.obj
+
+# не обрабатывать файлы, имя которых заканчивается на .txt
+*.txt
+# НО отслеживать файл lib.txt, несмотря на то, что мы игнорируем все .txt файлы с помощью предыдущего правила
+!lib.txt
+
+!KiDyM/KiDyMCommon/TablW/ParamPrintE.txt
+!KiDyM/KiDyMCommon/TablW/ParamPrintR.txt
+!KiDyM/KiDyMCommon/TablW/ParamPrintU.txt
+
+!KiDyM/SAV10/VvodE.txt
+!KiDyM/SAV10/VvodR.txt
+!KiDyM/SAV10/VvodU.txt
+
+!KiDyM/KiDyMCommon/SA/VvodE.txt
+!KiDyM/KiDyMCommon/SA/VvodR.txt
+!KiDyM/KiDyMCommon/SA/VvodU.txt
+
+Thumbs.db
+
+# Precompiled Headers
+
+
+*.gch
+*.pch
+
+
+# Compiled Dynamic libraries
+
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+
+
+*.mod
+*.smod
+
+# Compiled Static libraries
+
+*.lai
+*.la
+*.a
+*.lib
+
+
+# Executables
+
+*.exe
+*.out
+*.app
+
+#Directory
+
+__history/
+Debug/
+
+#Exclude log file
+
+*.res
+*.local
+
+# Exclude if folder Test
+
+
+*.htm
+*.dgs
+
+*.obk
+
+*.opr
+*.opt
+*.prn
+*.rez
+
+*.err
+
+# Prerequisites
 *.d
 
 # Compiled Object files
@@ -31,9 +128,7 @@
 *.out
 *.app
 
-
 #Exclude Pictures
-
 
 *.jpeg
 *.jpg
