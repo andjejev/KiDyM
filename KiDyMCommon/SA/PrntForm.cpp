@@ -1278,7 +1278,7 @@ void UnOpToVary(Form F,Cord **UnOps){
     UnOpToVary(F.U->Arg,UnOps);
     if(F.U->Func>1){//если это не унарный минус
 	 String Arg; wchar_t NameVary[256]; //Vary *V;
-     FormToStr(F.U->Arg,&Arg);
+     FormToStr(F.U->Arg,&Arg,true);
 	 UnOpToNameVary(NameVary,NameFunc[F.U->Func],Arg.w_str());//делаем имя
      TakeCord(UnOps,NameVary,F);//порождаем переменную в списке UnOps
     }
@@ -1305,7 +1305,7 @@ Form UnOpRepVary(Form F,Cord *UnOps){ Form f;
   case UNOP:
    if(F.U->Func>1){
 	String Arg; wchar_t NameVary[256]; Vary *V; Cord *q;
-	FormToStr(F.U->Arg,&Arg);
+	FormToStr(F.U->Arg,&Arg,true);
     UnOpToNameVary(NameVary,NameFunc[F.U->Func],Arg.c_str());//делаем имя
     if(FindCord(UnOps,NameVary,&q))
      F.V=q->V;
@@ -1365,38 +1365,44 @@ Form UnOpRepVary(Form F,Cord *UnOps){ Form f;
   case ARRA:
    F.A->Znach=UnOpRepVary(F.A->Znach,UnOps);
    if(F.A->F)
-    for(int i=0;i<F.A->N;i++)
-     F.A->F[i]=UnOpRepVary(F.A->F[i],UnOps);
+	for(int i=0;i<F.A->N;i++)
+	 F.A->F[i]=UnOpRepVary(F.A->F[i],UnOps);
    break;
  }
  return F;
 }
 //---------------------------------------------------------------------------
-void FormToStr(Form F,int Prio,String &S){
+void FormToStr(Form F,int Prio,String &S,bool HTML){
  int i; wchar_t Beg,End; wchar_t *Buf;
  switch(F.C->Atr){
   case PUST: S+=L"$"; break;
   case CNST:
    if(F.C->Name){
-	Buf=(wchar_t *)calloc(wcslen(F.C->Name)+1,SzC);
-	wcscpy(Buf,F.C->Name); Buf=LiterGrekToHtm(Buf);
-	S+=Buf;	free(Buf);
+	if(HTML){
+	 Buf=(wchar_t *)calloc(wcslen(F.C->Name)+1,SzC);
+	 wcscpy(Buf,F.C->Name); Buf=LiterGrekToHtm(Buf);
+	 S+=Buf; free(Buf);
+	}
+	else S+=F.C->Name;
    }
    else{ swprintf(Inf,L"%g",F.C->Val); S+=Inf; }
    break;
   case VARY:
-   Buf=(wchar_t *)calloc(wcslen(F.V->Name)+1,SzC);
-   wcscpy(Buf,F.V->Name); Buf=LiterGrekToHtm(Buf);
-   S+=Buf; free(Buf);
+   if(HTML){
+	Buf=(wchar_t *)calloc(wcslen(F.V->Name)+1,SzC);
+	wcscpy(Buf,F.V->Name); Buf=LiterGrekToHtm(Buf);
+	S+=Buf; free(Buf);
+   }
+   else S+=F.V->Name;
    break;
   case UNOP:
-   if(F.U->Func==2){ swprintf(Inf,L"&#8730;"); S+=Inf; }
+   if((F.U->Func==2)&&HTML){ swprintf(Inf,L"&#8730;"); S+=Inf; }
    else S+=NameFunc[F.U->Func];
    if((F.U->Func==1)&&
 	  ((F.U->Arg.C->Atr==CNST)||(F.U->Arg.C->Atr==VARY)||
 	   ((F.U->Arg.C->Atr==UNOP)&&(F.U->Arg.U->Func!=1))||
 	   (F.U->Arg.C->Atr==IPLL)||(F.U->Arg.C->Atr==SPLN))){
-	FormToStr(F.U->Arg,0,S);
+	FormToStr(F.U->Arg,0,S,HTML);
    }
    else{
 	switch((++Ksk)%3){
@@ -1404,7 +1410,7 @@ void FormToStr(Form F,int Prio,String &S){
 	 case 2: S+=L"["; break;
 	 case 0: S+=L"{"; break;
 	}
-	FormToStr(F.U->Arg,0,S);
+	FormToStr(F.U->Arg,0,S,HTML);
 	switch((Ksk--)%3){
 	 case 1: S+=L")"; break;
 	 case 2: S+=L"]"; break;
@@ -1418,13 +1424,15 @@ void FormToStr(Form F,int Prio,String &S){
 	 case 2: S+=L"["; break;
 	 case 0: S+=L"{"; break;
    }}
-   FormToStr(F.B->L,i,S);
-   swprintf(Inf,i<3?L" %c ":L"%c",ZNAC[i]); S+=Inf;
-   FormToStr(F.B->R,i,S);
+   FormToStr(F.B->L,i,S,HTML);
+   if(HTML){ swprintf(Inf,i<3?L" %c ":L"%c",ZNAC[i]); S+=Inf; }
+   else S+=ZNAC[i];
+   FormToStr(F.B->R,i,S,HTML);
    if((i<Prio)||((i==Prio)&&((i==2)||(i==4)||(i==5)))){
 	switch((Ksk--)%3){
-	 case 1: S+=L")"; break; case 2: S+=L"]"; break; case 0:
-	  S+=L"}"; break;
+	 case 1: S+=L")"; break;
+	 case 2: S+=L"]"; break;
+	 case 0: S+=L"}"; break;
    }}
    break;
   case IFOP:
@@ -1433,7 +1441,7 @@ void FormToStr(Form F,int Prio,String &S){
 	case 2: S+=L"["; break;
 	case 0: S+=L"{"; break;
    }
-   FormToStr(F.L->U,0,S);
+   FormToStr(F.L->U,0,S,HTML);
    if(F.L->Oper<3){
 	swprintf(Inf,L"%c",LOGZNAC[F.L->Oper]); S+=Inf;
    }
@@ -1445,9 +1453,9 @@ void FormToStr(Form F,int Prio,String &S){
 	 LOGZNAC[F.L->Oper-6],LOGZNAC[F.L->Oper-6]);
 	S+=Inf;
    }
-   FormToStr(F.L->V,0,S); S+=L" ? ";
-   FormToStr(F.L->FT,0,S);
-   if(F.L->FF.C!=Pust){ S+=L" ! "; FormToStr(F.L->FF,0,S); }
+   FormToStr(F.L->V,0,S,HTML); S+=L" ? ";
+   FormToStr(F.L->FT,0,S,HTML);
+   if(F.L->FF.C!=Pust){ S+=L" ! "; FormToStr(F.L->FF,0,S,HTML); }
    switch((Ksk--)%3){
 	case 1: S+=L")"; break;
 	case 2: S+=L"]"; break;
@@ -1460,7 +1468,7 @@ void FormToStr(Form F,int Prio,String &S){
 	case 2: Beg='['; End=']';
    }
    S+=F.I->A->Name; swprintf(Inf,L"%c",Beg); S+=Inf;
-   FormToStr(F.I->F,0,S); swprintf(Inf,L"%c",End); S+=Inf;
+   FormToStr(F.I->F,0,S,HTML); swprintf(Inf,L"%c",End); S+=Inf;
    break;
   case SPLN:
    switch(F.P->Type){
@@ -1468,54 +1476,54 @@ void FormToStr(Form F,int Prio,String &S){
 	case 2: Beg='['; End=']';
    }
    S+=F.P->A->Name; swprintf(Inf,L"%c",Beg); S+=Inf;
-   FormToStr(F.P->F,0,S); swprintf(Inf,L"%c",End); S+=Inf;
+   FormToStr(F.P->F,0,S,HTML); swprintf(Inf,L"%c",End); S+=Inf;
    break;
   case SUMM:
    S+=L"summ("; S+=F.S->i->Name;
-   S+=L","; FormToStr(F.S->a,0,S);
-   S+=L","; FormToStr(F.S->b,0,S);
-   S+=L","; FormToStr(F.S->F,0,S);
+   S+=L","; FormToStr(F.S->a,0,S,HTML);
+   S+=L","; FormToStr(F.S->b,0,S,HTML);
+   S+=L","; FormToStr(F.S->F,0,S,HTML);
    S+=L")";
    break;
   case INTG:
-   S+=L"intg("; FormToStr(F.G->f,0,S);
+   S+=L"intg("; FormToStr(F.G->f,0,S,HTML);
    S+=L","; S+=F.G->x->Name;
-   S+=L","; FormToStr(F.G->a,0,S);
-   S+=L","; FormToStr(F.G->b,0,S);
+   S+=L","; FormToStr(F.G->a,0,S,HTML);
+   S+=L","; FormToStr(F.G->b,0,S,HTML);
    S+=L")";
    break;
   case RUUT:
-   S+=L"root("; FormToStr(F.R->f,0,S);
+   S+=L"root("; FormToStr(F.R->f,0,S,HTML);
    S+=L","; S+=F.R->x->Name;
-   S+=L","; FormToStr(F.R->a,0,S);
-   S+=L","; FormToStr(F.R->b,0,S);
+   S+=L","; FormToStr(F.R->a,0,S,HTML);
+   S+=L","; FormToStr(F.R->b,0,S,HTML);
    S+=L")";
    break;
   case REST:
-   S+=L"rest("; FormToStr(F.O->a,0,S);
-   S+=L","; FormToStr(F.O->b,0,S);
+   S+=L"rest("; FormToStr(F.O->a,0,S,HTML);
+   S+=L","; FormToStr(F.O->b,0,S,HTML);
    S+=L")";
    break;
   case ARRA:
 //   if(F.A->Znach.C!C=Pust){
-//	FormToStr(F.A->Znach,0,S); S+=L"=";
+//	FormToStr(F.A->Znach,0,S,HTML); S+=L"=";
 //   }
    S+=L"{";
    if(F.A->F){
 	if(F.A->F[0].C->Atr==VARY){
 	 swprintf(Inf,L"%s=",F.A->F[0].V->Name); S+=Inf;
-	 FormToStr(F.A->F[0].V->Znach,0,S);
+	 FormToStr(F.A->F[0].V->Znach,0,S,HTML);
 	}
 	else
-	 FormToStr(F.A->F[0],0,S);
+	 FormToStr(F.A->F[0],0,S,HTML);
 	for(int i=1;i<F.A->N;i++){
 	 S+=L", ";
 	 if(F.A->F[i].C->Atr==VARY){
 	  swprintf(Inf,L"%s=",F.A->F[i].V->Name); S+=Inf;
-	  FormToStr(F.A->F[i].V->Znach,0,S);
+	  FormToStr(F.A->F[i].V->Znach,0,S,HTML);
 	 }
 	 else
-	  FormToStr(F.A->F[i],0,S);
+	  FormToStr(F.A->F[i],0,S,HTML);
    }}
    else if(F.A->A){
 	for(int i=0;i<F.A->N-1;i++){
@@ -1533,14 +1541,14 @@ void FormToStr(Form F,int Prio,String &S){
 	else
 	 S+=Round(F.a->FInd.C->Val);
    }
-   else FormToStr(F.a->FInd,0,S);
+   else FormToStr(F.a->FInd,0,S,HTML);
    S+=L"]";
    break;
 }}
 //---------------------------------------------------------------------------
-String *FormToStr(Form F,String *S){
+String *FormToStr(Form F,String *S,bool HTML){
  String aS; Ksk=0;
- FormToStr(F,0,aS);
+ FormToStr(F,0,aS,HTML);
  *S=aS;
  return S;
 }
@@ -1768,15 +1776,14 @@ wchar_t *FormToStringList(Form F,wchar_t *NameVary,wchar_t *Ln,
 //SL - массив строк для накопления информации
 //EndLn = true, если завершать строку и включать в массив строк
 //SF - строка - накопитель для формулы
- FormToStr(F,SF);
+ FormToStr(F,SF,true);
  if(NameVary){
-	Vary *V;
-  wchar_t *Buf=(wchar_t *)calloc(wcslen(NameVary)+1,SzC);
+  wchar_t *Buf=(wchar_t *)calloc(wcslen(NameVary)+1,SzC); Vary *V;
   wcscpy(Buf,NameVary);
   Buf=LiterGrekToHtm(Buf);
-  if(ISRAZM&&FindVary(NameVary, &V)&&(V->Razm.C!=Pust)) {
+  if(ISRAZM&&FindVary(NameVary,&V)&&(V->Razm.C!=Pust)){
    String SR;
-   FormToStr(V->Razm,&SR);
+   FormToStr(V->Razm,&SR,true);
    l+=swprintf(l,L"<b>%s</b>=%s, %s;",Buf,SF->w_str(),SR.w_str());
   }
   else

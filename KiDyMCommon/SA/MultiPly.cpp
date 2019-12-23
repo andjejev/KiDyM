@@ -95,7 +95,7 @@ class StringerBodyVarElemArra{
 
 void StringerBodyVarElemArra::SetProt(Vary *V){
  String S1=V->Name,S2;
- S1+=L"=L"; FormToStr(V->Znach,&S2); S1+=S2;
+ S1+=L"=L"; FormToStr(V->Znach,&S2,false); S1+=S2;
  Prot=(wchar_t *)calloc(S1.Length()+1,SzC); wcscpy(Prot,S1.c_str());
 }
 
@@ -103,7 +103,7 @@ void StringerBodyVarElemArra::SetForm(Arra *A){
  String S1,S2;
  S1.sprintf(L"%s[%d]=L",A->Name,A->N);
  for(int i=0;i<A->N;i++){
-  if(A->F) FormToStr(A->F[i],&S2);
+  if(A->F) FormToStr(A->F[i],&S2,false);
   else if(A->A) S2.sprintf(L"%g",A->A[i]);
   if(i<A->N-1) S2+=L", L";
   S1+=S2;
@@ -115,7 +115,7 @@ void StringerBodyVarElemArra::SetProt(Arra *a){
  String S1,S2;
  S1.sprintf(L"%s[%d]=L",a->Name,a->N);
  for(int i=0;i<a->N;i++){
-  if(a->F) FormToStr(a->F[i],&S2);
+  if(a->F) FormToStr(a->F[i],&S2,false);
   else if(a->A) S2.sprintf(L"%g",a->A[i]);
   if(i<a->N-1) S2+=L", L";
   S1+=S2;
@@ -125,19 +125,19 @@ void StringerBodyVarElemArra::SetProt(Arra *a){
 
 void StringerBodyVarElemArra::SetForm(Vary *V){
  String S1=V->Name,S2;
- S1+=L"=L"; FormToStr(V->Znach,&S2); S1+=S2;
+ S1+=L"=L"; FormToStr(V->Znach,&S2,false); S1+=S2;
  Form=(wchar_t *)calloc(S1.Length()+1,SzC); wcscpy(Form,S1.c_str());
 }
 
 void StringerBodyVarElemArra::SetProt(Elem *E){
  String S1=E->Name,S2;
- S1+=L"=L"; FormToStr(E->Znach,&S2); S1+=S2;
+ S1+=L"=L"; FormToStr(E->Znach,&S2,false); S1+=S2;
  Prot=(wchar_t *)calloc(S1.Length()+1,SzC); wcscpy(Prot,S1.c_str());
 }
 
 void StringerBodyVarElemArra::SetForm(Elem *E){
  String S1=E->Name,S2;
- S1+=L"=L"; FormToStr(E->Znach,&S2); S1+=S2;
+ S1+=L"=L"; FormToStr(E->Znach,&S2,false); S1+=S2;
  Form=(wchar_t *)calloc(S1.Length()+1,SzC); wcscpy(Form,S1.c_str());
 }
 

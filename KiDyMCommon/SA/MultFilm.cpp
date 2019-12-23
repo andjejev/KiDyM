@@ -2602,8 +2602,8 @@ Parm *__fastcall TMultFilms::DrawGear(TCanvas *Canvas,Parm *P){
   Canvas->Ellipse(X1-R1,Y1-R1,X1+R1,Y1+R1);
  if(Cf<0) Canvas->Arc(X2-R2,Y2-R2,X2+R2,Y2+R2,X2+R2,0,X2+R2,0);
  else Canvas->Ellipse(X2-R2,Y2-R2,X2+R2,Y2+R2);
- L=sqrt((X2-X1)*(X2-X1)+(Y2-Y1)*(Y2-Y1));
- Bt=atan2(Y2-Y1,X2-X1);
+ L=sqrt((double)((X2-X1)*(X2-X1)+(Y2-Y1)*(Y2-Y1)));
+ Bt=atan2((double)(Y2-Y1),(double)(X2-X1));
  if(F){
   Al=asin((R1+R2)/L);
   Xp1=X1-Round(sin(Bt-Al)*R1); Yp1=Y1-Round(cos(Bt-Al)*R1);
@@ -3785,7 +3785,7 @@ Parm *__fastcall TMultFilms::DrawVector(TCanvas *Canvas,Parm *P){
  int Ind,XA,YA,XB,YB,W,a=4,b=3*a; TColor C,Cp=Canvas->Pen->Color; double L,l,Ca,Sa;
  P=ParmLine(P,XA,YA,XB,YB,W,C);
  if(W>0){
-  L=sqrt((XB-XA)*(XB-XA)+(YB-YA)*(YB-YA)); l=Round(L);
+  L=sqrt((double)((XB-XA)*(XB-XA)+(YB-YA)*(YB-YA))); l=Round(L);
   if(l){
    Ca=(XB-XA)/L; Sa=(YB-YA)/L;
    Canvas->Pen->Color=C; Canvas->Pen->Width=W;
@@ -3801,7 +3801,7 @@ Parm *__fastcall TMultFilms::DrawFinger(TCanvas *Canvas,Parm *P){
  int Ind,XA,YA,XB,YB,W,a=4,b=3*a; TColor C,Cp=Canvas->Pen->Color; double L,l,Ca,Sa;
  P=ParmFinger(P,XA,YA,XB,YB,W,C);
  if(W>0){
-  L=sqrt((XB-XA)*(XB-XA)+(YB-YA)*(YB-YA)); l=Round(L);
+  L=sqrt((double)((XB-XA)*(XB-XA)+(YB-YA)*(YB-YA))); l=Round(L);
   if(l){
    Ca=(XB-XA)/L; Sa=(YB-YA)/L;
    Canvas->Pen->Color=C; Canvas->Pen->Width=W;
@@ -3817,7 +3817,7 @@ Parm *__fastcall TMultFilms::DrawSpeed(TCanvas *Canvas,Parm *P){
  int Ind,XA,YA,XB,YB,W,a=4,b=3*a; TColor C,Cp=Canvas->Pen->Color; double L,l,Ca,Sa;
  P=ParmSpeed(P,XA,YA,XB,YB,W,C);
  if(W>0){
-  L=sqrt((XB-XA)*(XB-XA)+(YB-YA)*(YB-YA)); l=Round(L);
+  L=sqrt((double)((XB-XA)*(XB-XA)+(YB-YA)*(YB-YA))); l=Round(L);
   if(l){
    Ca=(XB-XA)/L; Sa=(YB-YA)/L;
    Canvas->Pen->Color=C; Canvas->Pen->Width=W;
@@ -3833,7 +3833,7 @@ Parm *__fastcall TMultFilms::DrawAtang(TCanvas *Canvas,Parm *P){
  int Ind,XA,YA,XB,YB,W,a=4,b=3*a; TColor C,Cp=Canvas->Pen->Color; double L,l,Ca,Sa;
  P=ParmAtang(P,XA,YA,XB,YB,W,C);
  if(W>0){
-  L=sqrt((XB-XA)*(XB-XA)+(YB-YA)*(YB-YA)); l=Round(L);
+  L=sqrt((double)((XB-XA)*(XB-XA)+(YB-YA)*(YB-YA))); l=Round(L);
   if(l){
    Ca=(XB-XA)/L; Sa=(YB-YA)/L;
    Canvas->Pen->Color=C; Canvas->Pen->Width=W;
@@ -3849,7 +3849,7 @@ Parm *__fastcall TMultFilms::DrawAnorm(TCanvas *Canvas,Parm *P){
  int Ind,XA,YA,XB,YB,W,a=4,b=3*a; TColor C,Cp=Canvas->Pen->Color; double L,l,Ca,Sa;
  P=ParmAnorm(P,XA,YA,XB,YB,W,C);
  if(W>0){
-  L=sqrt((XB-XA)*(XB-XA)+(YB-YA)*(YB-YA)); l=Round(L);
+  L=sqrt((double)((XB-XA)*(XB-XA)+(YB-YA)*(YB-YA))); l=Round(L);
   if(l){
    Ca=(XB-XA)/L; Sa=(YB-YA)/L;
    Canvas->Pen->Color=C; Canvas->Pen->Width=W;

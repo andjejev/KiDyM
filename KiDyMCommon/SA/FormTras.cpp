@@ -317,7 +317,7 @@ void Train::ToStr(AnsiString &S){
  for(Summand *s=R;s;s=s->Sled){
   if(s->Znak) S+='-'; else if(s!=R) S+='+';
   for(Factor *f=s->R;f;f=f->Sled){
-   FormToStr(f->F,&sf);
+   FormToStr(f->F,&sf, false);
    S+=sf; if(f->Sled) S+='*';
 }}}
 //---------------------------------------------------------------------------

@@ -175,98 +175,101 @@ void __fastcall TFormParamPrint::ButtonOKClick(TObject *Sender){
       while(fgetws(Inf,255,Fi)) fputws(Inf,Fo);
       fclose(Fi);
      }
-     fclose(Fo);
+	 fclose(Fo);
 	 if(Fi){ _wunlink(m->S); _wrename(L"temp.popt",m->S); }
    }}
    DelAllMagazine(&Mf);
    CheckBoxPrinters->Enabled=false;
    CheckBoxPrinters->Checked=false;
   }
+ /*
   if(Prn->GetDevMode()){
    switch(Prn->GetDevMode()->dmPaperSize){
-    case DMPAPER_LETTER:
-     wcscpy(PaperName,L"Letter, 8 1/2- by 11-inches");              break;
-    case DMPAPER_LEGAL:
-     wcscpy(PaperName,L"Legal, 8 1/2- by 14-inches");               break;
-    case DMPAPER_A4:
-     wcscpy(PaperName,L"A4 Sheet, 210- by 297-millimeters");        break;
-    case DMPAPER_CSHEET:
-     wcscpy(PaperName,L"C Sheet, 17- by 22-inches");                break;
-    case DMPAPER_DSHEET:
-     wcscpy(PaperName,L"D Sheet, 22- by 34-inches");                break;
-    case DMPAPER_ESHEET:
-     wcscpy(PaperName,L"E Sheet, 34- by 44-inches");                break;
-    case DMPAPER_LETTERSMALL:
-     wcscpy(PaperName,L"Letter Small, 8 1/2- by 11-inches");        break;
-    case DMPAPER_TABLOID:
-     wcscpy(PaperName,L"Tabloid, 11- by 17-inches");                break;
-    case DMPAPER_LEDGER:
-     wcscpy(PaperName,L"Ledger, 17- by 11-inches");                 break;
-    case DMPAPER_STATEMENT:
-     wcscpy(PaperName,L"Statement, 5 1/2- by 8 1/2-inches");        break;
-    case DMPAPER_EXECUTIVE:
-     wcscpy(PaperName,L"Executive, 7 1/4- by 10 1/2-inches");       break;
-    case DMPAPER_A3:
-     wcscpy(PaperName,L"A3 sheet, 297- by 420-millimeters");        break;
-    case DMPAPER_A4SMALL:
-     wcscpy(PaperName,L"A4 small sheet, 210- by 297-millimeters");  break;
-    case DMPAPER_A5:
-     wcscpy(PaperName,L"A5 sheet, 148- by 210-millimeters");        break;
-    case DMPAPER_B4:
-     wcscpy(PaperName,L"B4 sheet, 250- by 354-millimeters");        break;
-    case DMPAPER_B5:
-     wcscpy(PaperName,L"B5 sheet, 182- by 257-millimeter paper");   break;
-    case DMPAPER_FOLIO:
-     wcscpy(PaperName,L"Folio, 8 1/2- by 13-inch paper");           break;
-    case DMPAPER_QUARTO:
-     wcscpy(PaperName,L"Quarto, 215- by 275-millimeter paper");     break;
-    case DMPAPER_10X14:
-     wcscpy(PaperName,L"10- by 14-inch sheet");                     break;
-    case DMPAPER_11X17:
-     wcscpy(PaperName,L"11- by 17-inch sheet");                     break;
-    case DMPAPER_NOTE:
-     wcscpy(PaperName,L"Note, 8 1/2- by 11-inches");                break;
-    case DMPAPER_ENV_9:
-     wcscpy(PaperName,L"#9 Envelope, 3 7/8- by 8 7/8-inches");      break;
-    case DMPAPER_ENV_10:
-     wcscpy(PaperName,L"#10 Envelope, 4 1/8- by 9 1/2-inches");     break;
-    case DMPAPER_ENV_11:
-     wcscpy(PaperName,L"#11 Envelope, 4 1/2- by 10 3/8-inches");    break;
-    case DMPAPER_ENV_12:
-     wcscpy(PaperName,L"#12 Envelope, 4 3/4- by 11-inches");        break;
-    case DMPAPER_ENV_14:
-     wcscpy(PaperName,L"#14 Envelope, 5- by 11 1/2-inches");        break;
-    case DMPAPER_ENV_DL:
-     wcscpy(PaperName,L"DL Envelope, 110- by 220-millimeters");     break;
-    case DMPAPER_ENV_C5:
-     wcscpy(PaperName,L"C5 Envelope, 162- by 229-millimeters");     break;
-    case DMPAPER_ENV_C3:
-     wcscpy(PaperName,L"C3 Envelope,  324- by 458-millimeters");    break;
-    case DMPAPER_ENV_C4:
-     wcscpy(PaperName,L"C4 Envelope,  229- by 324-millimeters");    break;
-    case DMPAPER_ENV_C6:
-     wcscpy(PaperName,L"C6 Envelope,  114- by 162-millimeters");    break;
-    case DMPAPER_ENV_C65:
-     wcscpy(PaperName,L"C65 Envelope, 114- by 229-millimeters");    break;
-    case DMPAPER_ENV_B4:
-     wcscpy(PaperName,L"B4 Envelope,  250- by 353-millimeters");    break;
-    case DMPAPER_ENV_B5:
-     wcscpy(PaperName,L"B5 Envelope,  176- by 250-millimeters");    break;
-    case DMPAPER_ENV_B6:
-     wcscpy(PaperName,L"B6 Envelope,  176- by 125-millimeters");    break;
-    case DMPAPER_ENV_ITALY:
-     wcscpy(PaperName,L"Italy Envelope, 110- by 230-millimeters");  break;
-    case DMPAPER_ENV_MONARCH:
-     wcscpy(PaperName,L"Monarch Envelope, 3 7/8- by 7 1/2-inches"); break;
-    case DMPAPER_ENV_PERSONAL:
-     wcscpy(PaperName,L"6 3/4 Envelope, 3 5/8- by 6 1/2-inches");   break;
-    case DMPAPER_FANFOLD_US:
-     wcscpy(PaperName,L"US Std Fanfold, 14 7/8- by 11-inches");     break;
-    case DMPAPER_FANFOLD_STD_GERMAN:
-     wcscpy(PaperName,L"German Std Fanfold, 8 1/2- by 12-inches");  break;
-    case DMPAPER_FANFOLD_LGL_GERMAN:
-     wcscpy(PaperName,L"German Legal Fanfold, 8 1/2- by 13-inches");break;
- }}}
+	case DMPAPER_LETTER:
+	 wcscpy(PaperName,L"Letter, 8 1/2- by 11-inches");              break;
+	case DMPAPER_LEGAL:
+	 wcscpy(PaperName,L"Legal, 8 1/2- by 14-inches");               break;
+	case DMPAPER_A4:
+	 wcscpy(PaperName,L"A4 Sheet, 210- by 297-millimeters");        break;
+	case DMPAPER_CSHEET:
+	 wcscpy(PaperName,L"C Sheet, 17- by 22-inches");                break;
+	case DMPAPER_DSHEET:
+	 wcscpy(PaperName,L"D Sheet, 22- by 34-inches");                break;
+	case DMPAPER_ESHEET:
+	 wcscpy(PaperName,L"E Sheet, 34- by 44-inches");                break;
+	case DMPAPER_LETTERSMALL:
+	 wcscpy(PaperName,L"Letter Small, 8 1/2- by 11-inches");        break;
+	case DMPAPER_TABLOID:
+	 wcscpy(PaperName,L"Tabloid, 11- by 17-inches");                break;
+	case DMPAPER_LEDGER:
+	 wcscpy(PaperName,L"Ledger, 17- by 11-inches");                 break;
+	case DMPAPER_STATEMENT:
+	 wcscpy(PaperName,L"Statement, 5 1/2- by 8 1/2-inches");        break;
+	case DMPAPER_EXECUTIVE:
+	 wcscpy(PaperName,L"Executive, 7 1/4- by 10 1/2-inches");       break;
+	case DMPAPER_A3:
+	 wcscpy(PaperName,L"A3 sheet, 297- by 420-millimeters");        break;
+	case DMPAPER_A4SMALL:
+	 wcscpy(PaperName,L"A4 small sheet, 210- by 297-millimeters");  break;
+	case DMPAPER_A5:
+	 wcscpy(PaperName,L"A5 sheet, 148- by 210-millimeters");        break;
+	case DMPAPER_B4:
+	 wcscpy(PaperName,L"B4 sheet, 250- by 354-millimeters");        break;
+	case DMPAPER_B5:
+	 wcscpy(PaperName,L"B5 sheet, 182- by 257-millimeter paper");   break;
+	case DMPAPER_FOLIO:
+	 wcscpy(PaperName,L"Folio, 8 1/2- by 13-inch paper");           break;
+	case DMPAPER_QUARTO:
+	 wcscpy(PaperName,L"Quarto, 215- by 275-millimeter paper");     break;
+	case DMPAPER_10X14:
+	 wcscpy(PaperName,L"10- by 14-inch sheet");                     break;
+	case DMPAPER_11X17:
+	 wcscpy(PaperName,L"11- by 17-inch sheet");                     break;
+	case DMPAPER_NOTE:
+	 wcscpy(PaperName,L"Note, 8 1/2- by 11-inches");                break;
+	case DMPAPER_ENV_9:
+	 wcscpy(PaperName,L"#9 Envelope, 3 7/8- by 8 7/8-inches");      break;
+	case DMPAPER_ENV_10:
+	 wcscpy(PaperName,L"#10 Envelope, 4 1/8- by 9 1/2-inches");     break;
+	case DMPAPER_ENV_11:
+	 wcscpy(PaperName,L"#11 Envelope, 4 1/2- by 10 3/8-inches");    break;
+	case DMPAPER_ENV_12:
+	 wcscpy(PaperName,L"#12 Envelope, 4 3/4- by 11-inches");        break;
+	case DMPAPER_ENV_14:
+	 wcscpy(PaperName,L"#14 Envelope, 5- by 11 1/2-inches");        break;
+	case DMPAPER_ENV_DL:
+	 wcscpy(PaperName,L"DL Envelope, 110- by 220-millimeters");     break;
+	case DMPAPER_ENV_C5:
+	 wcscpy(PaperName,L"C5 Envelope, 162- by 229-millimeters");     break;
+	case DMPAPER_ENV_C3:
+	 wcscpy(PaperName,L"C3 Envelope,  324- by 458-millimeters");    break;
+	case DMPAPER_ENV_C4:
+	 wcscpy(PaperName,L"C4 Envelope,  229- by 324-millimeters");    break;
+	case DMPAPER_ENV_C6:
+	 wcscpy(PaperName,L"C6 Envelope,  114- by 162-millimeters");    break;
+	case DMPAPER_ENV_C65:
+	 wcscpy(PaperName,L"C65 Envelope, 114- by 229-millimeters");    break;
+	case DMPAPER_ENV_B4:
+	 wcscpy(PaperName,L"B4 Envelope,  250- by 353-millimeters");    break;
+	case DMPAPER_ENV_B5:
+	 wcscpy(PaperName,L"B5 Envelope,  176- by 250-millimeters");    break;
+	case DMPAPER_ENV_B6:
+	 wcscpy(PaperName,L"B6 Envelope,  176- by 125-millimeters");    break;
+	case DMPAPER_ENV_ITALY:
+	 wcscpy(PaperName,L"Italy Envelope, 110- by 230-millimeters");  break;
+	case DMPAPER_ENV_MONARCH:
+	 wcscpy(PaperName,L"Monarch Envelope, 3 7/8- by 7 1/2-inches"); break;
+	case DMPAPER_ENV_PERSONAL:
+	 wcscpy(PaperName,L"6 3/4 Envelope, 3 5/8- by 6 1/2-inches");   break;
+	case DMPAPER_FANFOLD_US:
+	 wcscpy(PaperName,L"US Std Fanfold, 14 7/8- by 11-inches");     break;
+	case DMPAPER_FANFOLD_STD_GERMAN:
+	 wcscpy(PaperName,L"German Std Fanfold, 8 1/2- by 12-inches");  break;
+	case DMPAPER_FANFOLD_LGL_GERMAN:
+	 wcscpy(PaperName,L"German Legal Fanfold, 8 1/2- by 13-inches");break;
+ }}
+ */
+ }
  SaveOptPrn();
  Change=true; Close();
 }
@@ -475,7 +478,7 @@ void __fastcall TFormParamPrint::ReadOptPrn(void) {
    if(!wcscmp(Prn->Printers->Strings[i].c_str(),PrintName)){
     Prn->PrinterIndex=i; break;
  }}}
- DevMode=Prn?Prn->GetDevMode():NULL;
+ DevMode=/*Prn?Prn->GetDevMode():*/NULL;
  if(DevMode){
   if(!wcscmp(PaperName,L"Letter, 8 1/2- by 11-inches")){
    DevMode->dmPaperSize=DMPAPER_LETTER; return;

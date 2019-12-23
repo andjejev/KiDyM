@@ -21,6 +21,7 @@
 #include "SHDocVw_OCX.h"
 #include <OleCtrls.hpp>
 #include "CGAUGES.h"
+#include <System.ImageList.hpp>
 //---------------------------------------------------------------------------
 class TFormKinema : public TForm{
 __published:	// IDE-managed Components
@@ -230,6 +231,9 @@ public:		// User declarations
  TColor ColorHead,ColorNameOs,ColorTabl,ColorGrid,ColorCifrGrid,
   ColorRamka,ColorGraph,ColorPhonEd,ColorFontEd,ColorPhon,ColorFont,
   ColorGraph2,ColorGraph3,ColorGraph4,ColorGraph5;
+ bool flag;
+ int x_start, x_end, y_start, y_end,  checkX, checkY;
+ double teta, fi;
  int CountTabl;
    double Eps1,Eps2,p0,p1,p2,p3,XC,YC,ZC,xA,xB,yA,yB,XA,YA,XB,YB;
 		__fastcall TFormKinema(TComponent* Owner);

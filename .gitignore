@@ -124,6 +124,7 @@ Debug/
 *.exe
 *.out
 *.app
+*.stat
 
 #Exclude Pictures
 
@@ -133,3 +134,4 @@ Debug/
 *.bmp
 *.gif
 *.BMP
+*.ico

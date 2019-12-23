@@ -1271,7 +1271,7 @@ bool __fastcall TFormKinema::Kinemat(void){
 //   fwprintf(HTMFILE,L"<td width=\"%0.0f%%\">",Round(100/KColumn));
    if(SMALLFONT) shtm+=swprintf(shtm,L"<font size=-1>");
 //   if(SMALLFONT) fwprintf(HTMFILE,L"<font size=-%d>",1);
-   shtm=FormToStringList(V->Znach,V->Name,Shtm,shtm,SLH,false,&SF);
+	shtm=FormToStringList(V->Znach,V->Name,Shtm,shtm,SLH,false,&SF);
 //   PrintForm(false,HTMFILE,V->Name,V->Znach);
    if(!V->P&&V->Znach.C->Atr>CNST){
 	shtm+=swprintf(shtm,L" = %g",V->Val);
@@ -2508,7 +2508,7 @@ void __fastcall TFormKinema::DrawTabl(TCanvas *Canvas,Magazine *Names){
      Canvas->LineTo(PoleLeft+3+(A+d)/2,y-1+j+h/2);
    }}
    if(FindVary(t->Vy->Name,&V)){
-    F.V=V; if(V->Razm.C!=Pust) FormToStr(V->Razm,&RazmY);
+    F.V=V; if(V->Razm.C!=Pust) FormToStr(V->Razm,&RazmY,false);
    }
    DrawGrekText(Canvas,PoleLeft+A+2+d1,y-4,0,t->Vy->Name,SimbInd);
    swprintf(Inf,L"%g",t->Vl); l=Canvas->TextWidth(Inf);
@@ -2849,7 +2849,7 @@ void __fastcall TFormKinema::DrawSetka(TCanvas *Canvas,Magazine *Names){
  if(Names){
   if(SOVM){
    if(FindVary(Names->S,&V)){
-    F.V=V; if(V->Razm.C!=Pust) FormToStr(V->Razm,&RazmY);
+    F.V=V; if(V->Razm.C!=Pust) FormToStr(V->Razm,&RazmY,false);
    }
    if(RazmY.IsEmpty())
     swprintf(Inf,L"%s",Names->S);
@@ -2871,7 +2871,7 @@ void __fastcall TFormKinema::DrawSetka(TCanvas *Canvas,Magazine *Names){
    Canvas->Font->Color=ColorGraph;
    DrawGrekText(Canvas,x,y,0,Inf,SimbInd);
    if(FindVary(Names->Sled->S,&V)){
-    F.V=V; if(V->Razm.C!=Pust) FormToStr(V->Razm,&RazmY);
+    F.V=V; if(V->Razm.C!=Pust) FormToStr(V->Razm,&RazmY,false);
    }
    if(RazmY.IsEmpty())
     swprintf(Inf,L"%s",Names->Sled->S);
@@ -2898,7 +2898,7 @@ void __fastcall TFormKinema::DrawSetka(TCanvas *Canvas,Magazine *Names){
     inf+=swprintf(inf=Inf,Tabl[0].Vy->Name);
     if(FindVary(Tabl[0].Vy->Name,&V)){
      if(V->Razm.C!=Pust){
-      FormToStr(V->Razm,&RazmY);
+      FormToStr(V->Razm,&RazmY,false);
       inf+=swprintf(inf=Inf,L"%s[%s]",V->Name,RazmY);
      }
      else
@@ -2907,7 +2907,7 @@ void __fastcall TFormKinema::DrawSetka(TCanvas *Canvas,Magazine *Names){
     for(int K=KolElem(Names),i=1;i<K;i++){
      if(FindVary(Tabl[i].Vy->Name,&V)){
       if(V->Razm.C!=Pust){
-       FormToStr(V->Razm,&RazmY);
+       FormToStr(V->Razm,&RazmY,false);
        inf+=swprintf(inf,L", %s[%s]",V->Name,RazmY);
       }
 	  else
@@ -3007,7 +3007,7 @@ void __fastcall TFormKinema::DrawGrafik(TCanvas *Canvas,Magazine *Names){
        ImageBMP&&(Canvas==ImageBMP->Canvas)&&!ColorBMP){
      for(int k=1;k<WidthPen;k++){
 	  P[k*K][j].x=P[0][j].x;
-      P[k*K][j].y=P[(k-1)*K][j].y+k*pow(-1,k);
+	  P[k*K][j].y=P[(k-1)*K][j].y+k*pow(-1.0,k);
    }}}
    for(i=1;i<K;i++){ //yk0=yk[i];
     if(Vp=Tabl[i].Vx) X=Func(t);
@@ -3020,7 +3020,7 @@ void __fastcall TFormKinema::DrawGrafik(TCanvas *Canvas,Magazine *Names){
         ImageBMP&&(Canvas==ImageBMP->Canvas)&&!ColorBMP){
       for(int k=1;k<WidthPen;k++){
        P[i+k*K][j].x=P[i][j].x;
-       P[i+k*K][j].y=P[i+(k-1)*K][j].y+k*pow(-1,k);
+	   P[i+k*K][j].y=P[i+(k-1)*K][j].y+k*pow(-1.0,k);
   }}}}}
   for(i=0;i<K;i++){
    if(Prntr&&(Canvas==Prntr->Canvas)&&!ColorPrint||
@@ -3424,9 +3424,11 @@ double __fastcall TFormKinema::ToScreen(double x,double y,double z,
 //xe,ye - координаты точки на экране
  double X1,Y1,Z1,m;
  x-=XC; y-=YC; z-=ZC;
- X1=x*c11+y*c12+z*c13; Y1=x*c21+y*c22+z*c23; Z1=x*c31+y*c32+z*c33;
+ X1=x*c11+y*c12+z*c13; Y1=x*c21+y*c22+z*c23;
+ Z1=x*c31+y*c32+z*c33;
  if(Perspect){
-  m=3*Hg/(3.1*Diag-Z1); xe=Wo+Wg/2+m*X1; ye=Hh+Ht+Hg/2-Round(m*Y1);
+  m=3*Hg/(3.1*Diag-Z1); xe=Wo+Wg/2+Round(m*X1);
+  ye=Hh+Ht+Hg/2-Round(m*Y1);
  }
  else{
   xe=Wo+Wg/2+Round(X1/MSt[0]); ye=+Hh+Ht+Hg/2-Round(Y1/MSt[0]);
@@ -3543,6 +3545,9 @@ void __fastcall TFormKinema::DrawCurve3D(TCanvas *Canvas,TColor Color){
 }}
 //---------------------------------------------------------------------------
 void __fastcall TFormKinema::PrepDraw3D(TCanvas *Canvas){
+ Image->OnMouseDown=MouseDown;
+	Image->OnMouseMove=MouseMove;
+	Image->OnMouseUp=MouseUp;
  if(!VarInForm(true,VgX->Znach,L->Time)||!VarInForm(true,VgY->Znach,L->Time)){
   Fi=-M_PI/3; Psi=-M_PI/2; Teta=-M_PI/3;
   //Fi=-M_PI/6; Psi=0;       Teta=M_PI/3;
@@ -3617,14 +3622,14 @@ void __fastcall TFormKinema::Godograph3D(TCanvas *Canvas){
   Fi=Psi=Teta=0;
   for(Intg *I=L->I;I;I=I->Sled){ //подготовим интегралы
    if(I->x==L->Time&&I->b.V==L->Time){
-    I->B=Value(I->a); I->Val=0.0;
+	I->B=Value(I->a); I->Val=0.0;
   }}
   PrepDraw3D(Canvas);
   if(IsNoCalc){
    swprintf(Inf,L"Ќе дл€ всех значений времени %s\n"
-    L"из указанного в инструкции \"%s\"\n"
-    L"диапазона [%g,%g] получено решение!",
-    L->Time->Name,InsTime->Name,Tn,Tk);
+	L"из указанного в инструкции \"%s\"\n"
+	L"диапазона [%g,%g] получено решение!",
+	L->Time->Name,InsTime->Name,Tn,Tk);
    Application->MessageBox(Inf,L"¬нимание!",MB_OK|MB_ICONERROR);
  }}
  CGauge->ShowText=false;
@@ -3633,7 +3638,7 @@ void __fastcall TFormKinema::Godograph3D(TCanvas *Canvas){
 bool __fastcall TFormKinema::DrawGraf(TCanvas *Canvas){
  int Sk1,Sk2,Zap; Root *I; Parm *P; Form F;
  Name=TabControl->Tabs->Strings[TabControl->TabIndex];
- Sk1=Name.Pos(L"(L"); Sk2=Name.Pos(L")"); Zap=Name.Pos(L",L");
+ Sk1=Name.Pos(L"("); Sk2=Name.Pos(L")"); Zap=Name.Pos(L",");
  RazmX=RazmY=L"";
  if(Sk1){
   GodoGraf=true;
@@ -3660,7 +3665,7 @@ bool __fastcall TFormKinema::DrawGraf(TCanvas *Canvas){
      if(P->R&&(KolElem(P->R)==2)){
       X_n=P->R->Nam ? Val(StrToForm(P->R->Nam)) : P->R->Val;
       X_k=P->R->Sled->Nam ? Val(StrToForm(P->R->Sled->Nam)) : P->R->Sled->Val;
-     }
+	 }
      else if(P->Sled&&P->Sled->Sled){ P=P->Sled;
       X_n=P->Nam ? Val(StrToForm(P->Nam)) : P->Val; P=P->Sled;
       X_k=P->Nam ? Val(StrToForm(P->Nam)) : P->Val;
@@ -3705,9 +3710,11 @@ bool __fastcall TFormKinema::DrawGraf(TCanvas *Canvas){
    NameX=Name.SubString(Sk1+1,(Sk2?Sk2:Name.Length())-Sk1-1);
    if(!Sk2) Head+=L")";
    FindVary(NameX,&VgX); F.V=VgX;
-   if(VgX->Razm.C!=Pust) FormToStr(VgX->Razm,&RazmX); else RazmX=L"";
+   if(VgX->Razm.C!=Pust) FormToStr(VgX->Razm,&RazmX,false);
+   else RazmX=L"";
    FindVary(NameY,&VgY); F.V=VgY;
-   if(VgY->Razm.C!=Pust) FormToStr(VgY->Razm,&RazmY); else RazmY=L"";
+   if(VgY->Razm.C!=Pust) FormToStr(VgY->Razm,&RazmY,false);
+   else RazmY=L"";
    if(VgX->Znach==Pust){
     double Tno=Tn,Tko=Tk; Parm *P; int PP=VgX->P; Root *I;
     if(((I=FindInstLast(L"ƒ»јѕј«ќЌ"))||(I=FindInstLast(L"ƒ»јѕј«ќЌџ")))&&
@@ -3749,9 +3756,10 @@ bool __fastcall TFormKinema::DrawGraf(TCanvas *Canvas){
   Head+=L"(t)";
   FindVary(Name,&Vp);
   NameX=L->Time->Name; NameY=Name;
-  if(L->Time->Razm.C&&(L->Time->Razm.C!=Pust)) FormToStr(L->Time->Razm,&RazmX);
+  if(L->Time->Razm.C&&(L->Time->Razm.C!=Pust))
+   FormToStr(L->Time->Razm,&RazmX,false);
   F.V=Vp;
-  if(Vp->Razm.C!=Pust) FormToStr(Vp->Razm,&RazmY);
+  if(Vp->Razm.C!=Pust) FormToStr(Vp->Razm,&RazmY,false);
   GrafFunc(Canvas);
  }
  return true;
@@ -3791,7 +3799,8 @@ void __fastcall TFormKinema::SravnGraf(TCanvas *Canvas,wchar_t *Name){
  }
  if(!(s=wcschr(Names->S,'('))){
   NameX=L->Time->Name;
-  if(L->Time->Razm.C!=Pust) FormToStr(L->Time->Razm,&RazmX);
+  if(L->Time->Razm.C!=Pust)
+   FormToStr(L->Time->Razm,&RazmX,false);
  }
  else{ s++; if(s0=wcschr(s,')')) *s0='\0'; NameX=s; *s0=')'; }
  SravnFunc(Canvas,Names);
@@ -4920,16 +4929,20 @@ void __fastcall TFormKinema::PaintBoxPaint(TObject *Sender){
 }
 //---------------------------------------------------------------------------
 void __fastcall TFormKinema::MouseDown(TObject *Sender,
-      TMouseButton Button, TShiftState Shift, int x, int y){ double m;
+	  TMouseButton Button, TShiftState Shift, int X, int Y){
+//	   double m;
+flag = true;
+x_start = X, y_start = Y;
+/*
 //вычислим кватернион по углам Ёйлера
  p0=cos(0.5*Teta)*cos(0.5*(Psi+Fi)); p1=sin(0.5*Teta)*cos(0.5*(Psi-Fi));
  p2=sin(0.5*Teta)*sin(0.5*(Psi-Fi)); p3=cos(0.5*Teta)*sin(0.5*(Psi+Fi));
- xA=x; yA=y; //зафиксировали положение мыши
+ xA=X; yA=Y; //зафиксировали положение мыши
 //считаем масштаб и координаты точки щелчка мыши в св€занной с объектом — 
  m = Perspect ? 0.67*Diag/Hg : MSt[0];
- XA=m*(x-Wo-Wg/2); YA=m*(Hh+Hg/2-y);
+ XA=m*(X-Wo-Wg/2); YA=m*(Hh+Hg/2-Y);
 //включаем отслеживание координат движени€ мыши при нажатой ее клавиши
- Image->OnMouseMove=MouseMove;
+ Image->OnMouseMove=MouseMove;*/
 }
 //---------------------------------------------------------------------------
 void AngleTextOut(TCanvas *Canvas,int Angle,int X,int Y,AnsiString Text){
@@ -5012,10 +5025,10 @@ void TAqua::AxisTitl(AnsiString NameOs,int k,int n){
  K=(T[k].x-T[n].x)/r; xN=T[k].x+Round(d*K); xV=T[k].x+Round((d+l)*K);
  K=(T[k].y-T[n].y)/r; yN=T[k].y+Round(d*K); yV=T[k].y+Round((d+l)*K);
  if(xV<xN){
-  fi=atan2(yV-yN,xN-xV); x=xV-Round(0.5*h*sin(fi)); y=yV-Round(0.5*h*cos(fi));
+  fi=atan2((double)(yV-yN),(double)(xN-xV)); x=xV-Round(0.5*h*sin(fi)); y=yV-Round(0.5*h*cos(fi));
  }
  else{
-  fi=atan2(yN-yV,xV-xN); x=xN-Round(0.5*h*sin(fi)); y=yN-Round(0.5*h*cos(fi));
+  fi=atan2((double)(yN-yV),(double)(xV-xN)); x=xN-Round(0.5*h*sin(fi)); y=yN-Round(0.5*h*cos(fi));
  }
  fig=fi*180.0/M_PI; AngleTextOut(Canvas,fig,x,y,NameOs);
 }
@@ -5033,10 +5046,10 @@ void TAqua::Inscriptions(int p,int l,double Znach){
   K=(xAp-xBp)/r; xN=xAp+Round(d*K); xV=xAp+Round((d+l)*K);
   K=(yAp-yBp)/r; yN=yAp+Round(d*K); yV=yAp+Round((d+l)*K);
   if(xV<=xN){
-   fi=atan2(yV-yN,xN-xV); x=xV-Round(0.5*h*sin(fi)); y=yV-Round(0.5*h*cos(fi));
+   fi=atan2((double)(yV-yN),(double)(xN-xV)); x=xV-Round(0.5*h*sin(fi)); y=yV-Round(0.5*h*cos(fi));
   }
   else{
-   fi=atan2(yN-yV,xN-xV); x=xN-Round(0.5*h*sin(fi)); y=yN-Round(0.5*h*cos(fi));
+   fi=atan2((double)(yN-yV),(double)(xN-xV)); x=xN-Round(0.5*h*sin(fi)); y=yN-Round(0.5*h*cos(fi));
   }
   fig=fi*180.0/M_PI; Head.sprintf(L"%g",Znach); AngleTextOut(Canvas,fig,x,y,Head);
  }
@@ -5045,10 +5058,10 @@ void TAqua::Inscriptions(int p,int l,double Znach){
   K=(xCp-xBp)/r; xN=xCp+Round(d*K); xV=xCp+Round((d+l)*K);
   K=(yCp-yBp)/r; yN=yCp+Round(d*K); yV=yCp+Round((d+l)*K);
   if(xV<=xN){
-   fi=atan2(yV-yN,xN-xV); x=xV-Round(0.5*h*sin(fi)); y=yV-Round(0.5*h*cos(fi));
+   fi=atan2((double)(yV-yN),(double)(xN-xV)); x=xV-Round(0.5*h*sin(fi)); y=yV-Round(0.5*h*cos(fi));
   }
   else{
-   fi=atan2(yN-yV,xV-xN); x=xN-Round(0.5*h*sin(fi)); y=yN-Round(0.5*h*cos(fi));
+   fi=atan2((double)(yN-yV),(double)(xV-xN)); x=xN-Round(0.5*h*sin(fi)); y=yN-Round(0.5*h*cos(fi));
   }
   fig=fi*180.0/M_PI; Head.sprintf(L"%g",Znach); AngleTextOut(Canvas,fig,x,y,Head);
 }}
@@ -5203,17 +5216,17 @@ void __fastcall TFormKinema::DrawArea(TCanvas *Canvas,bool Color){
 }}
 //---------------------------------------------------------------------------
 void __fastcall TFormKinema::MouseMove(TObject *Sender,
-      TShiftState Shift, int x, int y){
- double dp0,dp1,dp2,dp3,m,Z,rArB,Zn,alpha,l,fi1,fi2;
+	  TShiftState Shift, int X, int Y){
+/* double dp0,dp1,dp2,dp3,m,Z,rArB,Zn,alpha,l,fi1,fi2;
 //зафиксировали новое положение мыши и вычислим рассто€ние ее в пикселах от старого
- xB=x; yB=y; l=sqrt((xB-xA)*(xB-xA)+(yB-yA)*(yB-yA));
+ xB=X; yB=Y; l=sqrt((xB-xA)*(xB-xA)+(yB-yA)*(yB-yA));
  if(l>10.0){ double q0,q1,q2,q3;
 //погасим предыдущий кадр
   DrawArea(Image->Canvas,false);
 //считаем масштаб и рассто€ние от экрана до центра аквариума,
 //а также координаты точки щелчка мыши в св€занной с аквариумом — 
   if(Perspect){ m=0.67*Diag/Hg; Z=3*Diag; } else{ m=MSt[0]; Z=Diag; }
-  XB=m*(x-Wo-Wg/2); YB=m*(Hh+Hg/2-y);
+  XB=m*(X-Wo-Wg/2); YB=m*(Hh+Hg/2-Y);
 //составл€ющие кватерниона поворота аквариума считаем через
 //скал€рное и векторное произведение векторов rA и rB
   rArB=sqrt((XA*XA+YA*YA+Z*Z)*(XB*XB+YB*YB+Z*Z));
@@ -5232,11 +5245,49 @@ void __fastcall TFormKinema::MouseMove(TObject *Sender,
 //сохран€ем новый кватернион и положение мыши
   p0=q0; p1=q1; p2=q2; p3=q3;
   XA=XB; YA=YB;
+}}*/
+if (flag == true)
+	{
+		x_end = X, y_end = Y;
+		double a = sqrt(pow((double)(x_end - x_start), 2));
+		double b = sqrt(pow((double)(y_end - y_start), 2));
+		double AN = 100.0;
+
+		fi   = asin(a/sqrt(pow(a, 2)+pow(AN, 2)));
+		teta = asin(b/sqrt(pow(b, 2)+pow(AN, 2)));
+
+		if(x_end <= x_start)
+		{
+			cFi = cos(Fi - fi);
+			sFi = sin(Fi - fi);
+			checkX = -1;
+		}
+		if(x_end >= x_start)
+		{
+			cFi = cos(Fi + fi);
+			sFi = sin(Fi + fi);
+			checkX = 1;
+		}
+		if(y_end >= y_start)
+		{
+			cTeta = cos(Teta + teta);
+			sTeta = sin(Teta + teta);
+			checkY = 1;
+		}
+		if(y_end <= y_start)
+		{
+			cTeta = cos(Teta - teta);
+			sTeta = sin(Teta - teta);
+			checkY = -1;
+		}
+		c11 =  cPsi*cTeta*cFi-sPsi*sFi;  c12 =- cPsi*cTeta*sFi-sPsi*cFi;  c13 = cPsi*sTeta;
+		c21 =  sPsi*cTeta*cFi+cPsi*sFi;  c22 =- sPsi*cTeta*sFi+cPsi*cFi;  c23 = sPsi*sTeta;
+		c31 =- sTeta*cFi;                c32 =  sTeta*sFi;                c33 = cTeta;
 }}
 //---------------------------------------------------------------------------
 void __fastcall TFormKinema::MouseUp(TObject *Sender,
-      TMouseButton Button, TShiftState Shift, int x, int y){
- double fi1,fi2;
+	  TMouseButton Button, TShiftState Shift, int x, int y){
+/* double fi1,fi2;
 //выключаем отслеживание координат движени€ мыши при нажатой ее клавиши
 // Image->OnMouseMove=NULL;
 //фиксируем углы Ёйлера и матрицу поворота дл€ дальнейших вращений
@@ -5249,6 +5300,13 @@ void __fastcall TFormKinema::MouseUp(TObject *Sender,
  c11=cPsi*cFi-sPsi*cTeta*sFi; c12=-cPsi*sFi-sPsi*cTeta*cFi; c13= sPsi*sTeta;
  c21=sPsi*cFi+cPsi*cTeta*sFi; c22= cPsi*cTeta*cFi-sPsi*sFi; c23=-cPsi*sTeta;
  c31=sTeta*sFi;               c32= sTeta*cFi;               c33= cTeta;
+*/
+flag = false;
+
+	if(checkX == 1)  {Fi -= fi;}
+	if(checkY == 1)  {Teta += teta;}
+	if(checkX == -1) {Fi += fi;}
+	if(checkY == -1) {Teta -= teta;}
 }
 //---------------------------------------------------------------------------
 void __fastcall TFormKinema::TimerAreaTimer(TObject *Sender){ static int k;

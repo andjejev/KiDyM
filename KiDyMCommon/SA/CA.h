@@ -69,8 +69,8 @@ struct Cnst{//постоянная
  Cnst *Sled; int Atr; wchar_t *Name; double Val;
 };
 struct Vary{//переменная
- Vary *Sled; int Atr; wchar_t *Name; Form Znach,Razm; double Val,Krazm;
- int P,Q,O,U,Line;
+ Vary *Sled; int Atr; wchar_t *Name; Form Znach,Razm;
+ double Val,Krazm; int P,Q,O,U,Line;
 };
 struct Unop{//унарная операция
  Unop *Sled; int Atr,Func; Form Arg; double Val; int P,O;
@@ -595,7 +595,7 @@ void ErrorSynt(TRichEdit *RE,wchar_t *S,int Cod=2);
    void (*Funcs)(double,Magazine *,double *),Magazine **NamesInclude,
    Magazine **NamesTAB,Magazine **NamesSpline,Magazine **NamesFurie,
    TCGauge *CGauge);
-  String *FormToStr(Form F,String *S);
+  String *FormToStr(Form F,String *S,bool HTML);
   int Grek(wchar_t *S);
   wchar_t *LiterGrekToHtm(wchar_t *S);
   Form StrToForm(wchar_t *Sp);
@@ -655,7 +655,7 @@ void ErrorSynt(TRichEdit *RE,wchar_t *S,int Cod=2);
 double ToBaseUnit(Form Razm);//Расчет приводного коэффициента к основным размерностям
 void FormTo2List(Form F,Cord **Ch,Cord **Zn);
 void CalcKRazm(Vary*V);// Вычисление коэффициента размерности
-void ConvOldRazm(Vary *V);// Преобразование к размерности пользователя
+void ConvOldRazm(Vary *V);//Преобразование к размерности пользователя
 int TypOfRazm(Vary *V);//Определение тип размерности - масса, длина или время
 bool FindParmParm(Parm *R,wchar_t *S,Parm **P,Parm **p);
 Form RemoveItem(Form F,Vary *V);//убираем слагаемое - переменную V из формулы F

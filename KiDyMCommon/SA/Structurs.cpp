@@ -144,7 +144,7 @@ void PointVar::SetPoin(wchar_t *T){
 
 void PointVar::SetForm(Vary *V){
  String S1,S2;
- S1=V->Name; S1+=L"=L"; FormToStr(V->Znach,&S2); S1+=S2;
+ S1=V->Name; S1+=L"=L"; FormToStr(V->Znach,&S2,false); S1+=S2;
  Form=(wchar_t *)calloc(S1.Length()+1,SzC); wcscpy(Form,S1.c_str());
 }
 

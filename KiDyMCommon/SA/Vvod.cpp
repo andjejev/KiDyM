@@ -18,7 +18,7 @@ extern int MAXZNAC,MAXFUNC,NYear,N;
 extern wchar_t *NameFunc[],Inf[],ErrFile[],InpFile[],HtmFile[],
  OprFile[],OutFile[],WORKDIR[],CurrDir[],Autor[],SimbInd,
  ANSIFile[],Stmp[],*stmp,Serr[],*serr,Shtm[],*shtm;
-extern TStringList *SLT,*SLE,*SLH,*SLD; extern String SF;
+extern TStringList *SLT,*SLE,*SLH,*SLK; extern String SF;
 extern Cnst *Pust,*Nul,*Odin,*Dva,*Tri; extern List *L,*LBeg;
 extern long DateInp;
 
@@ -823,7 +823,9 @@ Form ReadForm(int Prio,TRichEdit *RE){
 	else{ String Su,Sv,St,S;
 	 FF.C=Pust;
 	 inf+=swprintf(inf=Inf,L"Тернарное предложение в строке %d:\n\n",Line);
-	 FormToStr(F,&Su); FormToStr(V,&Sv); FormToStr(FT,&St);
+	 FormToStr(F,&Su,true);
+	 FormToStr(V,&Sv,true);
+	 FormToStr(FT,&St,true);
 	 S=Su;
 	 switch(Oper){
 	  case 1: S+=L" < ";  break; case 2: S+=L" > ";  break;
@@ -952,7 +954,9 @@ Form ReadForm(int Prio,TRichEdit *RE){
 	   FF.C=Pust;
 //       inf+=swprintf(inf=Inf,L"Тернарное предложение в строке %d:\n\n",Line);
 	   inf+=swprintf(inf=Inf,L"   %d: ",Line);
-	   FormToStr(F,&Su); FormToStr(V,&Sv); FormToStr(FT,&St);
+	   FormToStr(F,&Su,true);
+	   FormToStr(V,&Sv,true);
+	   FormToStr(FT,&St,true);
 	   S=Su;
 	   switch(Oper){
 		case 1: S+=L" < ";  break; case 2: S+=L" > ";  break;
@@ -1048,8 +1052,6 @@ bool SptoArr(Arra *Arr,int &N,TRichEdit *RE){
 //   PrintForm(false,TMPFILE,NULL,F[i]); fputwc(B,TMPFILE);
    stmp=FormToStringList(F[i],NULL,Stmp,stmp,SLT,false,&SF);
    stmp+=swprintf(stmp,L"%c ",B);
-//   FormToStr(F[i],&SF);
-//   stmp+=swprintf(stmp,L"%s%c ",SF.w_str(),B);
    i++;
   }
   else{
@@ -1305,7 +1307,7 @@ M:Flag=ReadStr(0,RE);
 //	swprintf(Inf,L"%s",E->Name); fputws(Blank,TMPFILE);
 //	PrintForm(false,TMPFILE,Inf,E->Znach);
 	stmp+=swprintf(stmp,Blank);
-    Blank[0]='\0'; blank=Blank;
+	Blank[0]='\0'; blank=Blank;
 	stmp=FormToStringList(E->Znach,E->Name,Stmp,stmp,SLT,false,&SF);
 //	fputws(L"&nbsp;",TMPFILE);
 	stmp+=swprintf(stmp,L"&nbsp;");
@@ -1362,7 +1364,7 @@ M:Flag=ReadStr(0,RE);
 //	 fputws(L"&nbsp;",TMPFILE);
 //	 FormToStr(V->Znach,&SF);
 	 stmp+=swprintf(stmp,Blank);
-     Blank[0]='\0'; blank=Blank;
+	 Blank[0]='\0'; blank=Blank;
 	 stmp=FormToStringList(V->Znach,V->Name,Stmp,stmp,SLT,false,&SF);
 	 if(ImageKDM) ImageKDM->Add(V);
    }}
@@ -1654,8 +1656,8 @@ M:Flag=ReadStr(0,RE);
   case   ';':
    LowToUpp(S);
    if(!wcscmp(S,KONEC)){
-    StatusBar->SimpleText=SBold;
-    return;
+	StatusBar->SimpleText=SBold;
+	return;
    }
    goto M;
   case 255:
@@ -1845,8 +1847,8 @@ Form TwoListToForm(Cord *Ch,Cord *Zn){
 //---------------------------------------------------------------------------
 void MessageRazmNotEcv(wchar_t *Buf, Form F1,Form F2){
  String S1,S2;
- FormToStr(F1,&S1);
- FormToStr(F2,&S2);
+ FormToStr(F1,&S1,false);
+ FormToStr(F2,&S2,false);
  swprintf(Inf,L"%s\nтребуется размерность %s,\n"
   L"а указана размерность %s",Buf,S2,S1);
  Application->MessageBoxA(Inf,L"Ошибка в размерности",MB_ICONERROR);
@@ -1913,24 +1915,24 @@ void DiagnosRazm(Form F,Form R){
     case 6:
      RazmArg=SetRazmByForm(F.B->L),RazmForm=RazmArg^F.B->R;
 	 if(RazmArg!=R){
-	  FormToStr(F,&B1);
+	  FormToStr(F,&B1,false);
 	  swprintf(Buf,L"Для формулы \n%s\n",B1);
 	  MessageRazmNotEcv(Buf,RazmArg,R);
-     } break;
+	 } break;
 //проверка размерности правого и левого операнда
-    case 1: case 2:
-     RazmL=SetRazmByForm(F.B->L);
-     if(RazmL/R!=Odin){
-	  FormToStr(F.B->L,&B1);
-	  FormToStr(F,&B2);
+	case 1: case 2:
+	 RazmL=SetRazmByForm(F.B->L);
+	 if(RazmL/R!=Odin){
+	  FormToStr(F.B->L,&B1,false);
+	  FormToStr(F,&B2,false);
 	  swprintf(Buf,L"Для левого операнда \n%s\n формулы \n%s\n ",
 	   B1,B2);
 	  MessageRazmNotEcv(Buf,RazmL,R);
 	 }
 	 RazmR=SetRazmByForm(F.B->R);
 	 if(RazmR/R!=Odin){
-	  FormToStr(F.B->R,&B1);
-	  FormToStr(F,&B2);
+	  FormToStr(F.B->R,&B1,false);
+	  FormToStr(F,&B2,false);
 	  swprintf(Buf,L"Для правого операнда \n%s\n формулы \n%s\n ",
 	   B1,B2);
 	  MessageRazmNotEcv(Buf,RazmR,R);
@@ -1942,8 +1944,8 @@ void DiagnosRazm(Form F,Form R){
 	 else RazmL=RazmL/RazmR;
 	  RazmL=TrunCateRazmNmDn (RazmL);
 	  if(RazmL/R!=Odin){
-	   FormToStr(F.B->L,&B1);
-	   FormToStr(F.B->R,&B2);
+	   FormToStr(F.B->L,&B1,false);
+	   FormToStr(F.B->R,&B2,false);
 	  if (F.B->Oper==3)
 	   swprintf(Buf,L"Для произведения \n%s * %s\n",B1,B2);
 	  else
@@ -2112,12 +2114,12 @@ MB_ICONWARNING);
  }
  if((I=FindInstLast(L"ЕДИНИЦЫ ИЗМЕРЕНИЯ"))||
 	(I=FindInstLast(L"РАЗМЕРНОСТИ"))){
-  if (&MUnit) MUnit=(Magazine *)realloc (MUnit, 3*sizeof(Magazine));
-  else MUnit =(Magazine*)calloc(3,sizeof(Magazine));
+  if(MUnit) MUnit=(Magazine *)realloc(MUnit,3*sizeof(Magazine));
+  else MUnit=(Magazine *)calloc(3,sizeof(Magazine));
   MUnit->Sled=MUnit+1; MUnit->Sled->Sled=MUnit+2;
   for(Parm *P=I->First;P;P=P->Sled){
-   wchar_t *S=(wchar_t*)calloc(wcslen(P->R->Nam)+1,SzC);
-   switch (P->Nam[0]){
+   wchar_t *S=(wchar_t *)calloc(wcslen(P->R->Nam)+1,SzC);
+   switch(P->Nam[0]){
 	case 'm':
 	 MUnit[0].S=wcscpy(S,P->R->Nam);
 	 break;
@@ -2127,15 +2129,12 @@ MB_ICONWARNING);
 	case 't':
 	 MUnit[2].S=wcscpy(S,P->R->Nam);
 	 break;
-	 default:
+	default:
 	 swprintf(Inf,
-	 L"В инструкции %s задан неизвестный тип размерности %s",P->R->Nam);
+	  L"Задан неизвестный тип размерности %s",P->R->Nam);
 	 Application->MessageBoxA(Inf,I->Name,MB_OK);
 	 free(S);
-
-   }
-	  //TakeMagazine(&MUnit,P->R->Nam);
-  }
+  }}
  }
  if(!(I=FindInstLast(L"РАБОТА"))){
   swprintf(Inf,
@@ -2534,7 +2533,7 @@ int LogZnac(){ int i; wchar_t B1=B;
 	L"Ожидалось: '%c', '%c', '%c%c', '%c%c', '%c%c', '%c%c', '%c%c', '%c%c'",
 	LOGZNAC[1],LOGZNAC[2],LOGZNAC[1],LOGZNAC[4],LOGZNAC[2],LOGZNAC[4],
 	LOGZNAC[3],LOGZNAC[4],LOGZNAC[4],LOGZNAC[4],LOGZNAC[1],LOGZNAC[1],
-    LOGZNAC[2],LOGZNAC[2]);
+	LOGZNAC[2],LOGZNAC[2]);
    Application->MessageBox(Inf,L"Ошибка!",MB_OK);
    i=0;
  }
@@ -2568,144 +2567,144 @@ Form ReadForm(int Prio){
 //     F.V=TakeVary(S); if(!(F.V->Line)) F.V->Line=Line;
 //   }}
    if(B!='('){
-    if(FindCnst(S,&C)) F.C=C;
-    else if(FindArra(S,&A)) F.A=A;
-    else{ bool IsArra=false; //02.02.2019
-     for(Shtr=S;Shtr=wcschr(Shtr+1,'\'');*Shtr='\''){
-      *Shtr='\0';
-      if((wcsstr(Shtr+1,tst)==(Shtr+1))||
-         (wcsstr(Shtr+1,L->Time->Name)==(Shtr+1))){
-       if(IsArra||FindArra(S,&A)){//02.02.2019
-        if(IsArra)                //02.02.2019
-         A=TakeArra(S);           //02.02.2019
-        if(!A->Line) A->Line=Line;//02.02.2019
-        IsArra=true;              //02.02.2019
-       }                          //02.02.2019
-       else{
-        VV=TakeVary(S);
-        if(!(VV->Line)) VV->Line=Line;
-     }}}
-     if(IsArra)                   //02.02.2019
-      F.A=TakeArra(S);            //02.02.2019
-     else                         //02.02.2019
-      F.V=TakeVary(S);
+	if(FindCnst(S,&C)) F.C=C;
+	else if(FindArra(S,&A)) F.A=A;
+	else{ bool IsArra=false; //02.02.2019
+	 for(Shtr=S;Shtr=wcschr(Shtr+1,'\'');*Shtr='\''){
+	  *Shtr='\0';
+	  if((wcsstr(Shtr+1,tst)==(Shtr+1))||
+		 (wcsstr(Shtr+1,L->Time->Name)==(Shtr+1))){
+	   if(IsArra||FindArra(S,&A)){//02.02.2019
+		if(IsArra)                //02.02.2019
+		 A=TakeArra(S);           //02.02.2019
+		if(!A->Line) A->Line=Line;//02.02.2019
+		IsArra=true;              //02.02.2019
+	   }                          //02.02.2019
+	   else{
+		VV=TakeVary(S);
+		if(!(VV->Line)) VV->Line=Line;
+	 }}}
+	 if(IsArra)                   //02.02.2019
+	  F.A=TakeArra(S);            //02.02.2019
+	 else                         //02.02.2019
+	  F.V=TakeVary(S);
    }}
    else{
-    KS++;
-    switch(Oper=Func(S)){
-     case  2:
-      U=ReadForm(0); if(U.C==Pust) return U; F=sqrt(U); break;
-     case  3:
-      U=ReadForm(0); if(U.C==Pust) return U; F=sin(U); break;
-     case  4:
-      U=ReadForm(0); if(U.C==Pust) return U; F=cos(U); break;
-     case  5:
-      U=ReadForm(0); if(U.C==Pust) return U; F=tg(U); break;
-     case  6:
-      U=ReadForm(0); if(U.C==Pust) return U; F=arcsin(U); break;
-     case  7:
-      U=ReadForm(0); if(U.C==Pust) return U; F=arctg(U); break;
-     case  8:
-      U=ReadForm(0); if(U.C==Pust) return U; F=exp(U); break;
-     case  9:
-      U=ReadForm(0); if(U.C==Pust) return U; F=ln(U); break;
-     case 10:
-      U=ReadForm(0); if(U.C==Pust) return U; F=sh(U); break;
-     case 11:
-      U=ReadForm(0); if(U.C==Pust) return U; F=ch(U); break;
-     case 12:
-      U=ReadForm(0); if(U.C==Pust) return U; F=arsh(U); break;
-     case 13:
-      U=ReadForm(0); if(U.C==Pust) return U; F=abs(U); break;
-     case 14:
-      U=ReadForm(0);
-      if(U.C==Pust) return U; F=rand(U); ISRAND=true; break;
-     case 15:
-      U=ReadForm(0); if(U.C==Pust) return U; F=ceil(U); break;
-     case 16:
-      U=ReadForm(0); if(U.C==Pust) return U; F=floor(U); break;
-     case 17:
-      U=ReadForm(0); if(U.C==Pust) return U; F=arccos(U); break;
-     default:
-      if(!wcscmp(S,L"ipl")){
-       if(ReadStr(0)<1) return F;
-       if(B==',') A=TakeArra(S);
-       U=ReadForm(0); if(U.C==Pust) return U;
-       F.I=TakeIpll(1,A,U);
-      }
-      else if(!wcscmp(S,L"spln")){
-       if(ReadStr(0)<1) return F;
+	KS++;
+	switch(Oper=Func(S)){
+	 case  2:
+	  U=ReadForm(0); if(U.C==Pust) return U; F=sqrt(U); break;
+	 case  3:
+	  U=ReadForm(0); if(U.C==Pust) return U; F=sin(U); break;
+	 case  4:
+	  U=ReadForm(0); if(U.C==Pust) return U; F=cos(U); break;
+	 case  5:
+	  U=ReadForm(0); if(U.C==Pust) return U; F=tg(U); break;
+	 case  6:
+	  U=ReadForm(0); if(U.C==Pust) return U; F=arcsin(U); break;
+	 case  7:
+	  U=ReadForm(0); if(U.C==Pust) return U; F=arctg(U); break;
+	 case  8:
+	  U=ReadForm(0); if(U.C==Pust) return U; F=exp(U); break;
+	 case  9:
+	  U=ReadForm(0); if(U.C==Pust) return U; F=ln(U); break;
+	 case 10:
+	  U=ReadForm(0); if(U.C==Pust) return U; F=sh(U); break;
+	 case 11:
+	  U=ReadForm(0); if(U.C==Pust) return U; F=ch(U); break;
+	 case 12:
+	  U=ReadForm(0); if(U.C==Pust) return U; F=arsh(U); break;
+	 case 13:
+	  U=ReadForm(0); if(U.C==Pust) return U; F=abs(U); break;
+	 case 14:
+	  U=ReadForm(0);
+	  if(U.C==Pust) return U; F=rand(U); ISRAND=true; break;
+	 case 15:
+	  U=ReadForm(0); if(U.C==Pust) return U; F=ceil(U); break;
+	 case 16:
+	  U=ReadForm(0); if(U.C==Pust) return U; F=floor(U); break;
+	 case 17:
+	  U=ReadForm(0); if(U.C==Pust) return U; F=arccos(U); break;
+	 default:
+	  if(!wcscmp(S,L"ipl")){
+	   if(ReadStr(0)<1) return F;
 	   if(B==',') A=TakeArra(S);
-       U=ReadForm(0); if(U.C==Pust) return U;
-       F.P=TakeSpln(1,A,U);
-      }
-      else if(!wcscmp(S,L"summ")){ int Rez;
-       FF=ReadForm(0); if(FF.C==Pust) return FF;
-       if(Rez=ReadStr(0),Rez<1) return F;
-       if(Rez==NAME){
-        VV=TakeVary(S); if(VV&&!(VV->Line)) VV->Line=Line;
-	      if(B==','){
-         U=ReadForm(0); if(U.C==Pust) return U;
-	       if(B==','){
-          V=ReadForm(0); if(V.C==Pust) return V;
-         }
-         F.S=TakeSumm(FF,VV,U,V); break;
-       }}
-       return F;
-      }
-      else if(!wcscmp(S,L"intg")){ int Rez;
-       FF=ReadForm(0); if(FF.C==Pust) return FF;
-       if(Rez=ReadStr(0),Rez<1) return F;
-       if(Rez==NAME){
-        VV=TakeVary(S); if(VV&&!(VV->Line)) VV->Line=Line;
-	      if(B==','){
-         U=ReadForm(0); if(U.C==Pust) return U;
-	       if(B==','){
-          V=ReadForm(0); if(V.C==Pust) return V;
-         }
-         F.G=TakeIntg(FF,VV,U,V); break;
-        }
-        else
-         F.G=TakeIntg(FF,VV);
-       }
-       return F;
-      }
-      else if(!wcscmp(S,L"root")){ int Rez;
-       FF=ReadForm(0); if(FF.C==Pust) return FF;
-       if(Rez=ReadStr(0),Rez<1) return F;
-       if(Rez==NAME){
-        VV=TakeVary(S); if(VV&&!(VV->Line)) VV->Line=Line;
-	      if(B==','){
-         U=ReadForm(0); if(U.C==Pust) return U;
-	       if(B==','){
-          V=ReadForm(0); if(V.C==Pust) return V;
-         }
-         F.R=TakeSolu(FF,VV,U,V); break;
-        }
-        else F.C=Pust;
-       }
-       return F;
-      }
-      else if(!wcscmp(S,L"rest")){
-       U=ReadForm(0); if(U.C==Pust) return U;
-	     if(B==','){
-        V=ReadForm(0); if(V.C==Pust) return V;
-        F.O=TakeRest(U,V); break;
-       }
-       return F;
-      }
-      else{
-       swprintf(Inf,L"Неопознанная унарная операция");
-       Application->MessageBox(Inf,L"Ошибка!",MB_OK); F.C=Pust; return F;
+	   U=ReadForm(0); if(U.C==Pust) return U;
+	   F.I=TakeIpll(1,A,U);
+	  }
+	  else if(!wcscmp(S,L"spln")){
+	   if(ReadStr(0)<1) return F;
+	   if(B==',') A=TakeArra(S);
+	   U=ReadForm(0); if(U.C==Pust) return U;
+	   F.P=TakeSpln(1,A,U);
+	  }
+	  else if(!wcscmp(S,L"summ")){ int Rez;
+	   FF=ReadForm(0); if(FF.C==Pust) return FF;
+	   if(Rez=ReadStr(0),Rez<1) return F;
+	   if(Rez==NAME){
+		VV=TakeVary(S); if(VV&&!(VV->Line)) VV->Line=Line;
+		  if(B==','){
+		 U=ReadForm(0); if(U.C==Pust) return U;
+		   if(B==','){
+		  V=ReadForm(0); if(V.C==Pust) return V;
+		 }
+		 F.S=TakeSumm(FF,VV,U,V); break;
+	   }}
+	   return F;
+	  }
+	  else if(!wcscmp(S,L"intg")){ int Rez;
+	   FF=ReadForm(0); if(FF.C==Pust) return FF;
+	   if(Rez=ReadStr(0),Rez<1) return F;
+	   if(Rez==NAME){
+		VV=TakeVary(S); if(VV&&!(VV->Line)) VV->Line=Line;
+		  if(B==','){
+		 U=ReadForm(0); if(U.C==Pust) return U;
+		   if(B==','){
+		  V=ReadForm(0); if(V.C==Pust) return V;
+		 }
+		 F.G=TakeIntg(FF,VV,U,V); break;
+		}
+		else
+		 F.G=TakeIntg(FF,VV);
+	   }
+	   return F;
+	  }
+	  else if(!wcscmp(S,L"root")){ int Rez;
+	   FF=ReadForm(0); if(FF.C==Pust) return FF;
+	   if(Rez=ReadStr(0),Rez<1) return F;
+	   if(Rez==NAME){
+		VV=TakeVary(S); if(VV&&!(VV->Line)) VV->Line=Line;
+		  if(B==','){
+		 U=ReadForm(0); if(U.C==Pust) return U;
+		   if(B==','){
+		  V=ReadForm(0); if(V.C==Pust) return V;
+		 }
+		 F.R=TakeSolu(FF,VV,U,V); break;
+		}
+		else F.C=Pust;
+	   }
+	   return F;
+	  }
+	  else if(!wcscmp(S,L"rest")){
+	   U=ReadForm(0); if(U.C==Pust) return U;
+		 if(B==','){
+		V=ReadForm(0); if(V.C==Pust) return V;
+		F.O=TakeRest(U,V); break;
+	   }
+	   return F;
+	  }
+	  else{
+	   swprintf(Inf,L"Неопознанная унарная операция");
+	   Application->MessageBox(Inf,L"Ошибка!",MB_OK); F.C=Pust; return F;
    }} }
    break;
   case Long: case Double:
    if(IsLiters(S)){
-    if(!FindCnst(S,&(F.C))){
-     swprintf(Inf,L"Если это число, то ожидалась цифра\n"
-      L"или символы: '.', 'E', 'e', ';'");
-     Application->MessageBox(Inf,L"Ошибка!",MB_OK);
-     F.C=Pust;
+	if(!FindCnst(S,&(F.C))){
+	 swprintf(Inf,L"Если это число, то ожидалась цифра\n"
+	  L"или символы: '.', 'E', 'e', ';'");
+	 Application->MessageBox(Inf,L"Ошибка!",MB_OK);
+	 F.C=Pust;
    }}
    else F.C=TakeCnst(S);
    break;
@@ -2716,8 +2715,8 @@ Form ReadForm(int Prio){
  for(;;) switch(B){
   case '[':
    if(A=TakeArra(S)){
-    F=ReadForm(0);
-    F.a=TakeArrI(A,F);
+	F=ReadForm(0);
+	F.a=TakeArrI(A,F);
 	if(!ReadChar()) return F.C=Pust,F;
    }
    break;
@@ -2737,26 +2736,28 @@ Form ReadForm(int Prio){
    F.C=Pust; return F;
   case  '<': case '>': case '\\':
 L: if((Oper=LogZnac())>0){
-    V=ReadForm(0);
-    if(V.C==Pust) return V;
-    if(B=='?'){
-     FT=ReadForm(0);
-     if(FT.C==Pust) return FT;
-    }
-    else{
-     swprintf(Inf,L"Ожидалось: '?'");
-     Application->MessageBox(Inf,L"Ошибка!",MB_OK);
-     F.C=Pust; return F;
-    }
-    if(B=='!'){
-     FF=ReadForm(0);
-     if(FF.C==Pust) return FF;
-    }
-    else{ String Su,Sv,St,S;
-     FF.C=Pust;
-     inf+=swprintf(inf=Inf,L"Тернарное предложение в строке %d:\n\n",Line);
-	 FormToStr(F,&Su); FormToStr(V,&Sv); FormToStr(FT,&St);
-     S=Su;
+	V=ReadForm(0);
+	if(V.C==Pust) return V;
+	if(B=='?'){
+	 FT=ReadForm(0);
+	 if(FT.C==Pust) return FT;
+	}
+	else{
+	 swprintf(Inf,L"Ожидалось: '?'");
+	 Application->MessageBox(Inf,L"Ошибка!",MB_OK);
+	 F.C=Pust; return F;
+	}
+	if(B=='!'){
+	 FF=ReadForm(0);
+	 if(FF.C==Pust) return FF;
+	}
+	else{ String Su,Sv,St,S;
+	 FF.C=Pust;
+	 inf+=swprintf(inf=Inf,L"Тернарное предложение в строке %d:\n\n",Line);
+	 FormToStr(F,&Su,true);
+	 FormToStr(V,&Sv,true);
+	 FormToStr(FT,&St,true);
+	 S=Su;
      switch(Oper){
 	  case 1: S+=L" < ";  break; case 2: S+=L" > ";  break;
 	  case 3: S+=L" <= "; break; case 4: S+=L" >= "; break;
@@ -2771,23 +2772,23 @@ L: if((Oper=LogZnac())>0){
    }
   default:
    if(Oper=Znac(B)){
-    if(Prio>=Oper) return F;
-    switch(Oper){
-     case  1: U=ReadForm(Oper); if(U.C==Pust) return U; F=F+U; break;
-     case  2: U=ReadForm(Oper); if(U.C==Pust) return U; F=F-U; break;
-     case  3: U=ReadForm(Oper); if(U.C==Pust) return U; F=F*U; break;
-     case  4: U=ReadForm(Oper); if(U.C==Pust) return U; F=F/U; break;
-     case  5: U=ReadForm(Oper); if(U.C==Pust) return U; F=F%U; break;
-     case  6: U=ReadForm(Oper); if(U.C==Pust) return U; F=F^U; break;
-     default:
-      swprintf(Inf,L"Неопознанный символ - '%c'",B);
-      Application->MessageBox(Inf,L"Ошибка!",MB_OK); F.C=Pust; return F;
+	if(Prio>=Oper) return F;
+	switch(Oper){
+	 case  1: U=ReadForm(Oper); if(U.C==Pust) return U; F=F+U; break;
+	 case  2: U=ReadForm(Oper); if(U.C==Pust) return U; F=F-U; break;
+	 case  3: U=ReadForm(Oper); if(U.C==Pust) return U; F=F*U; break;
+	 case  4: U=ReadForm(Oper); if(U.C==Pust) return U; F=F/U; break;
+	 case  5: U=ReadForm(Oper); if(U.C==Pust) return U; F=F%U; break;
+	 case  6: U=ReadForm(Oper); if(U.C==Pust) return U; F=F^U; break;
+	 default:
+	  swprintf(Inf,L"Неопознанный символ - '%c'",B);
+	  Application->MessageBox(Inf,L"Ошибка!",MB_OK); F.C=Pust; return F;
    }}
    else return F;
 }}
 //------------------------------------------------------------------------
 Form StrToForm(wchar_t *Sp){
- Form F; int Kl,Kp; wchar_t Buf[80]=L"Нарушен баланс скобок",*spOld=sp; 
+ Form F; int Kl,Kp; wchar_t Buf[80]=L"Нарушен баланс скобок",*spOld=sp;
 sp=Sp;
  if(Sp&&*Sp){
   Kl=KSimbStr(Sp,'('); Kp=KSimbStr(Sp,')');
@@ -3545,9 +3546,9 @@ void TImageKDM::DrawShow(TPaintBox *pbReport,int &y){
    else//полное имя файла
     wcscpy(Dir,I->First->Nam);
    if(_waccess(Dir,0)){
-	swprintf(Inf,TextFromFile(WORKDIR,L"EditKiDyM",&SLD,70),I->First->Nam);
+	swprintf(Inf,TextFromFile(WORKDIR,L"EditKiDyM",&SLK,70),I->First->Nam);
 	Application->MessageBox(Inf,
-	 TextFromFile(WORKDIR,L"EditKiDyM",&SLD,53),MB_OK);
+	 TextFromFile(WORKDIR,L"EditKiDyM",&SLK,53),MB_OK);
     I->First->Nam[0]='\0';
    }
    if(s=wcsrchr(Dir,'.')){

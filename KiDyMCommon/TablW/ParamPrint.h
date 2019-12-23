@@ -13,6 +13,7 @@
 #include <ToolWin.hpp>
 #include <Mask.hpp>
 #include <Printers.hpp>
+#include <System.ImageList.hpp>
 //---------------------------------------------------------------------------
 class TFormParamPrint : public TForm
 {

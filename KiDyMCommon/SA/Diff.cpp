@@ -1013,7 +1013,7 @@ bool Valc(Form F,double &Znach){
       F.R->x->Val=a; ClearVar();
       if(Valc(F.R->f,fa)){
 	   if(fa*fb>0){ String S;
-        FormToStr(F.R->f,&S);
+        FormToStr(F.R->f,&S,false);
         swprintf(Inf,L"Неправильно указан интервал [%g,%g] переменной \"%s\"\n"
          L"поиска корня функции \"%s\".\n"
          L"На концах интервала функция должна принимать значения разных знаков!\n"
@@ -1298,7 +1298,7 @@ double ValSumm(Form F,Vary *I){
     F.R->x->Val=b; ClearVar(); fb=Val(F.R->f);
     F.R->x->Val=a; ClearVar(); fa=Val(F.R->f);
 	if(fa*fb>0){ String S;
-	 FormToStr(F.R->f,&S);
+	 FormToStr(F.R->f,&S,false);
      swprintf(Inf,L"Неправильно указан интервал [%g, %g] переменной \"%s\"\n"
       L"поиска корня функции \"%s\".\n"
       L"На концах интервала функция должна принимать значения разных знаков!\n"
@@ -1502,7 +1502,7 @@ if(PRINTVARS){
     F.R->x->Val=b; ClearVar(); fb=Val(F.R->f);
     F.R->x->Val=a; ClearVar(); fa=Val(F.R->f);
 	if(fa*fb>0){ String S;
-	 FormToStr(F.R->f,&S);
+	 FormToStr(F.R->f,&S,false);
      swprintf(Inf,L"Неправильно указан интервал [%g,%g] переменной \"%s\"\n"
       L"поиска корня функции \"%s\".\n"
       L"На концах интервала функция должна принимать значения разных знаков!\n"
@@ -1546,7 +1546,7 @@ double Value(Form F){ double Rez=0.0;
 	wchar_t *inf,Buf[1024]; String SF; //FILE *FF;
 //    if(FF=_wfopen(L"temp.txt",L"w")){
 	 inf+=swprintf(inf=Inf,L"Нельзя вычислить значение формулы\n");
-	 FormToStr(F,&SF);
+	 FormToStr(F,&SF,false);
 	 inf+=swprintf(inf,L"%s",SF.w_str());
 //     PrintForm(true,FF,NULL,F);
 //     fclose(FF);

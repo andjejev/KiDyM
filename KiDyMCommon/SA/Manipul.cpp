@@ -447,7 +447,7 @@ bool Accumulate(Body *B){
 	  swprintf(Inf,L"R%c: поворот вокруг оси %c на угол %s",C,C,P->R->Nam);
 	 else if(P->R->F.C!=Pust)
 	  swprintf(Inf,L"R%c: поворот вокруг оси %c на угол %s",C,C,
-	   (FormToStr(P->R->F,&AS),AS.c_str()));
+	   (FormToStr(P->R->F,&AS,false),AS.c_str()));
 	 else
 	  swprintf(Inf,L"R%c: поворот вокруг оси %c на угол %g°",C,C,P->R->Val);
 	 PrintFormMatr(L"Otladka",Inf,L"Skk_1",Skk_1);
@@ -456,7 +456,7 @@ bool Accumulate(Body *B){
 	   P->R->Nam,C);
 	 else if(P->R->F.C!=Pust)
 	  swprintf(Inf,L"получим wkk_1 после поворота на угол %s вокруг оси %c",
-	   (FormToStr(P->R->F,&AS),AS.c_str()),C);
+	   (FormToStr(P->R->F,&AS,false),AS.c_str()),C);
 	 else
 	  swprintf(Inf,L"получим wkk_1 после поворота на угол %0.1f вокруг оси %c",
 	   P->R->Val,C);
@@ -615,7 +615,7 @@ void RotationVector(wchar_t Os,wchar_t *Head,Form V[],Parm *P){
    swprintf(Inf,L"повернем %s на угол %s вокруг оси %c",Head,P->R->Nam,Os);
   else if(P->R->F.C!=Pust)
    swprintf(Inf,L"повернем %s на угол %s вокруг оси %c",Head,
-	(FormToStr(P->R->F,&AS),AS.c_str()),Os);
+	(FormToStr(P->R->F,&AS,false),AS.c_str()),Os);
   else
    swprintf(Inf,L"повернем %s на угол %0.1f вокруг оси %c",Head,P->R->Val,Os);
   PrintFormVect(L"OTLADKA",Inf,Head,V);
