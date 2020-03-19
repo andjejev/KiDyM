@@ -1834,6 +1834,7 @@ __fastcall TFormKinema::TFormKinema(TComponent* Owner):TForm(Owner){
    if(s=wcsrchr(WORKDIR,'\\')) *s='\0';
  }}
  FormSizes(L,T,W,H); Left=L; Top=T; Width=W; Height=H;
+//MReportClick((TObject *)L"d:\\E\\AJU\\METODRAB\\СПУ\\Осенний семестр 2019\\Проекты\\Догадайло\\MembrA.dgs");
  ToolButtonPrint->Enabled=Printer()->Printers->Count>0;
  wcscpy(HeadCalc,L"Кинематика");
  if((s=wcsrchr(InpFile,'/'))||(s=wcsrchr(InpFile,'\\'))){
@@ -3020,7 +3021,7 @@ void __fastcall TFormKinema::DrawGrafik(TCanvas *Canvas,Magazine *Names){
         ImageBMP&&(Canvas==ImageBMP->Canvas)&&!ColorBMP){
       for(int k=1;k<WidthPen;k++){
        P[i+k*K][j].x=P[i][j].x;
-	   P[i+k*K][j].y=P[i+(k-1)*K][j].y+k*pow(-1.0,k);
+       P[i+k*K][j].y=P[i+(k-1)*K][j].y+k*pow(-1.0,k);
   }}}}}
   for(i=0;i<K;i++){
    if(Prntr&&(Canvas==Prntr->Canvas)&&!ColorPrint||
@@ -4817,7 +4818,8 @@ void __fastcall TFormKinema::TimerModelTimer(TObject *Sender){
 }}
 //---------------------------------------------------------------------------
 void __fastcall TFormKinema::FormResize(TObject *Sender){
- if(RESIZE) TabControlChange(Sender);
+ if(RESIZE)
+  TabControlChange(Sender);
 }
 //---------------------------------------------------------------------------
 void __fastcall TFormKinema::mPrintOpClick(TObject *Sender){
@@ -5025,10 +5027,12 @@ void TAqua::AxisTitl(AnsiString NameOs,int k,int n){
  K=(T[k].x-T[n].x)/r; xN=T[k].x+Round(d*K); xV=T[k].x+Round((d+l)*K);
  K=(T[k].y-T[n].y)/r; yN=T[k].y+Round(d*K); yV=T[k].y+Round((d+l)*K);
  if(xV<xN){
-  fi=atan2((double)(yV-yN),(double)(xN-xV)); x=xV-Round(0.5*h*sin(fi)); y=yV-Round(0.5*h*cos(fi));
+  fi=atan2((double)(yV-yN),(double)(xN-xV));
+  x=xV-Round(0.5*h*sin(fi)); y=yV-Round(0.5*h*cos(fi));
  }
  else{
-  fi=atan2((double)(yN-yV),(double)(xV-xN)); x=xN-Round(0.5*h*sin(fi)); y=yN-Round(0.5*h*cos(fi));
+  fi=atan2((double)(yN-yV),(double)(xV-xN));
+  x=xN-Round(0.5*h*sin(fi)); y=yN-Round(0.5*h*cos(fi));
  }
  fig=fi*180.0/M_PI; AngleTextOut(Canvas,fig,x,y,NameOs);
 }
@@ -5046,10 +5050,12 @@ void TAqua::Inscriptions(int p,int l,double Znach){
   K=(xAp-xBp)/r; xN=xAp+Round(d*K); xV=xAp+Round((d+l)*K);
   K=(yAp-yBp)/r; yN=yAp+Round(d*K); yV=yAp+Round((d+l)*K);
   if(xV<=xN){
-   fi=atan2((double)(yV-yN),(double)(xN-xV)); x=xV-Round(0.5*h*sin(fi)); y=yV-Round(0.5*h*cos(fi));
+   fi=atan2((double)(yV-yN),(double)(xN-xV));
+   x=xV-Round(0.5*h*sin(fi)); y=yV-Round(0.5*h*cos(fi));
   }
   else{
-   fi=atan2((double)(yN-yV),(double)(xN-xV)); x=xN-Round(0.5*h*sin(fi)); y=yN-Round(0.5*h*cos(fi));
+   fi=atan2((double)(yN-yV),(double)(xN-xV));
+   x=xN-Round(0.5*h*sin(fi)); y=yN-Round(0.5*h*cos(fi));
   }
   fig=fi*180.0/M_PI; Head.sprintf(L"%g",Znach); AngleTextOut(Canvas,fig,x,y,Head);
  }
@@ -5058,10 +5064,12 @@ void TAqua::Inscriptions(int p,int l,double Znach){
   K=(xCp-xBp)/r; xN=xCp+Round(d*K); xV=xCp+Round((d+l)*K);
   K=(yCp-yBp)/r; yN=yCp+Round(d*K); yV=yCp+Round((d+l)*K);
   if(xV<=xN){
-   fi=atan2((double)(yV-yN),(double)(xN-xV)); x=xV-Round(0.5*h*sin(fi)); y=yV-Round(0.5*h*cos(fi));
+   fi=atan2((double)(yV-yN),(double)(xN-xV));
+   x=xV-Round(0.5*h*sin(fi)); y=yV-Round(0.5*h*cos(fi));
   }
   else{
-   fi=atan2((double)(yN-yV),(double)(xV-xN)); x=xN-Round(0.5*h*sin(fi)); y=yN-Round(0.5*h*cos(fi));
+   fi=atan2((double)(yN-yV),(double)(xV-xN));
+   x=xN-Round(0.5*h*sin(fi)); y=yN-Round(0.5*h*cos(fi));
   }
   fig=fi*180.0/M_PI; Head.sprintf(L"%g",Znach); AngleTextOut(Canvas,fig,x,y,Head);
 }}

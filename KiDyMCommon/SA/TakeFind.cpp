@@ -14,7 +14,7 @@ extern wchar_t Inf[],DgsFile[],WORKDIR[],Autor[],AtrNelin,
  Sdgs[],*sdgs;
 extern FILE *DGSFILE,*HTMFILE; extern double h_RK;
 extern bool PRINTVARS,OTLADKA; extern Magazine *PrintVars,*MUnit;
-extern TStringList *SLD,*SLP, *SLK;
+extern TStringList *SLD,*SLP,*SLK;
 
 Cord *Rm,*Rl,*Rt,*Ra;//Корни осн.размерностей
 //---------------------------------------------------------------------------
@@ -317,8 +317,8 @@ bool FindVary(wchar_t *S,Vary **V){
 //---------------------------------------------------------------------------
 Vary *TakeVary(wchar_t *S){ Vary *V;
  if(!S||!*S) return NULL;
-if(!wcscmp(S,L"E"))
-V=NULL;
+//if(!wcscmp(S,L"E"))
+//V=NULL;
  Compress(S);
  if(FindVary(S,&V)) return V;
  Vary *W=(Vary *)calloc(1,sizeof(Vary));

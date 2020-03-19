@@ -1575,9 +1575,9 @@ Ch: if(CHAP)
   if(SMALLFONT) sdgs+=swprintf(sdgs,L"<font size=-1>");
   swprintf(S,L"%s",V->Name);
 //  PrintForm(false,DGSFILE,S,V->Znach);
-  if(V->Znach.C->Atr==CNST){
+  if((V->Razm.C!=Pust)&&(V->Znach.C->Atr==CNST)){
    CalcKRazm(V);
-   V->Znach=V->Krazm*V->Razm;
+   V->Znach=V->Krazm*V->Znach;
    ConvOldRazm(V);
   }
   sdgs=FormToStringList(V->Znach,S,Sdgs,sdgs,SLD,false,&SF);

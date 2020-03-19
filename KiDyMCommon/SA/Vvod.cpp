@@ -10,10 +10,10 @@
 #include "OperMess.h"
 #include <process.h>
 #include <stdio.h>
-#include <jpeg.hpp>
+//#include <jpeg.hpp>
 
 extern FILE *INFILE,*ERRFILE,*HTMFILE,*OPRFILE,*TMPFILE;
-extern bool IsError,IsSyntError,ISRAND,ISINCOMPLETEIF,ISRAZM;
+extern bool IsError,IsSyntError,ISRAND,ISINCOMPLETEIF;
 extern int MAXZNAC,MAXFUNC,NYear,N;
 extern wchar_t *NameFunc[],Inf[],ErrFile[],InpFile[],HtmFile[],
  OprFile[],OutFile[],WORKDIR[],CurrDir[],Autor[],SimbInd,
@@ -25,7 +25,7 @@ extern long DateInp;
 		   /*  ќбъ€влени€ объектов:  */
 long Lfile,PozFile; Magazine *Mtp,*MUnit;
 int PUNKT=0,StrLong,NStrCalc;
-bool RRR,SMALLFONT,BodysIsTreated,LOGIC; TColor ColorModel=(TColor)255;
+bool RRR,SMALLFONT,BodysIsTreated,LOGIC; TColor ColorModel=(TColor)255,ISRAZM;
 TImage *ImageVvod,**Images;
 int Line=1,Com,NumbTask,KolErr,KolMes,KOper=23,Kblank=1;
 static wchar_t B,ENTERSIMBOL,S[256];
@@ -3479,12 +3479,13 @@ void Zamostity(TImage *Im,TPaintBox *Img){
   wcscpy(Ext,s+1); LowToUpp(Ext);
   if(!wcscmp(Ext,L"BMP"))
    Im->Picture->LoadFromFile(FileFon);
-  else if(!wcscmp(Ext,L"JPG")||!wcscmp(Ext,L"JPEG")){
-   TJPEGImage *jp = new TJPEGImage();
-   jp->LoadFromFile(FileFon);
-   Im->Picture->Bitmap->Assign(jp);
-   delete jp;
- }}
+//  else if(!wcscmp(Ext,L"JPG")||!wcscmp(Ext,L"JPEG")){
+//   TJPEGImage *jp = new TJPEGImage();
+//   jp->LoadFromFile(FileFon);
+//   Im->Picture->Bitmap->Assign(jp);
+//   delete jp;
+//  }
+ }
  H=Img->ClientRect.Height();
  h=Im->ClientRect.Height();
  Ki=H/h; if(H%h) Ki++;
@@ -3553,7 +3554,8 @@ void TImageKDM::DrawShow(TPaintBox *pbReport,int &y){
    }
    if(s=wcsrchr(Dir,'.')){
     wcscpy(Ext,s+1); LowToUpp(Ext);
-    if(!wcscmp(Ext,L"BMP")||!wcscmp(Ext,L"JPG")||!wcscmp(Ext,L"JPEG")){ int S1,S2;
+	if(!wcscmp(Ext,L"BMP")){//||!wcscmp(Ext,L"JPG")||!wcscmp(Ext,L"JPEG")){
+	 int S1,S2;
 	 if(ImageVvod) delete ImageVvod;
       ImageVvod=new TImage(NULL); ImageVvod->Parent=NULL;
      ImageVvod->Align=alNone; ImageVvod->Visible=false;
@@ -3567,13 +3569,14 @@ void TImageKDM::DrawShow(TPaintBox *pbReport,int &y){
 	  pbReport->Canvas->CopyRect(Rd,ImageVvod->Canvas,
 	   ImageVvod->Canvas->ClipRect);// (0,0,ImageVvod);// >Canvas->Draw(0,0,ImageVvod);
     }}
-    else if(!wcscmp(Ext,L"JPG")||!wcscmp(Ext,L"JPEG")){
-     TJPEGImage *jp = new TJPEGImage();
-     jp->LoadFromFile(I->First->Nam);
-     ImageVvod->Picture->Bitmap->Assign(jp);
-     pbReport->Canvas->CopyRect(Rd,ImageVvod->Canvas,Rs);
-     delete jp;
-   }}
+//    else if(!wcscmp(Ext,L"JPG")||!wcscmp(Ext,L"JPEG")){
+//     TJPEGImage *jp = new TJPEGImage();
+//     jp->LoadFromFile(I->First->Nam);
+//     ImageVvod->Picture->Bitmap->Assign(jp);
+//     pbReport->Canvas->CopyRect(Rd,ImageVvod->Canvas,Rs);
+//     delete jp;
+//   }
+   }
    return;
  }}
  else{//несколько рисунков

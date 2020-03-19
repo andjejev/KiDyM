@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <ProjectGuid>{235D3438-7B61-4DCD-A603-419573CADEA4}</ProjectGuid>
-        <ProjectVersion>18.2</ProjectVersion>
+        <ProjectVersion>18.8</ProjectVersion>
         <MainSource>Kinematika.cpp</MainSource>
         <Config Condition="'$(Config)'==''">Debug</Config>
         <FrameworkType>VCL</FrameworkType>
@@ -115,9 +115,9 @@
         <ILINK_TranslatedLibraryPath>$(BDS)\lib\$(LANGDIR)\debug;$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
-        <AppEnableHighDPI>true</AppEnableHighDPI>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <Defines>_DEBUG;$(Defines)</Defines>
+        <AppDPIAwarenessMode>PerMonitor</AppDPIAwarenessMode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <Defines>_DEBUG;$(Defines)</Defines>
@@ -129,9 +129,9 @@
         <ILINK_TranslatedLibraryPath>$(BDS)\lib\$(LANGDIR)\release;$(ILINK_TranslatedLibraryPath)</ILINK_TranslatedLibraryPath>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
-        <AppEnableHighDPI>true</AppEnableHighDPI>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <Defines>NDEBUG;$(Defines)</Defines>
+        <AppDPIAwarenessMode>PerMonitor</AppDPIAwarenessMode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <Defines>NDEBUG;$(Defines)</Defines>
@@ -282,8 +282,8 @@
             <BuildOrder>22</BuildOrder>
         </CppCompile>
         <FormResources Include="..\KiDyMCommon\TablW\EditList.dfm"/>
-        <FormResources Include="..\KiDyMCommon\TablW\EditTextButton.dfm"/>
         <FormResources Include="..\KiDyMCommon\TablW\EditListPrn.dfm"/>
+        <FormResources Include="..\KiDyMCommon\TablW\EditTextButton.dfm"/>
         <FormResources Include="..\KiDyMCommon\SA\OtchetForm.dfm"/>
         <FormResources Include="..\KiDyMCommon\TablW\ParamPrint.dfm"/>
         <FormResources Include="Kinema.dfm"/>

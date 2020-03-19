@@ -2320,7 +2320,7 @@ void PrepareIncompleteIf(void){
  for(Vary *V=L->V;V;V=V->Sled){
   PrepareIncompleteIf(V->Znach);
 }}
-
+//-----------------------------------------------------------------------------
 double ToBaseUnit(Form Razm){
  List *LRazm;
  if(FindList(L"ÐÀÇÌÅÐÍÎÑÒÈ",&LRazm)){
@@ -2331,4 +2331,36 @@ double ToBaseUnit(Form Razm){
  }
  return 1.0;
 }
+//------------------------------------------------------------------------------
+double ValKRazm(Form F){   //Ðàñ÷åò ïåðåâîäíîãî êîýôôèöèåíòà ðàçìåðíîñòè
+ bool Rez; double D,u,v; Vary *V;
+//FILE *FF=fopen(L"file","a"); PrintForm(true,FF,L"âû÷èñëÿåì F",F); fputc('\n',FF); fclose(FF);
+ switch(F.C->Atr){
+  case CNST : D=1.0; break;
+  case VARY :
+   if(FindVary(F.V->Name,&V))
+    D=V->Znach.B->L.C->Val;
+   else D=1.0;
+   break;
+  case BNOP:
+   u=ValKRazm(F.B->L);
+   v=ValKRazm(F.B->R);
+   switch(F.B->Oper){
+    case  3: D = u * v; break;
+    case  4: D = u/v; break;
+    case  6:
+     D=pow(u,F.B->R.C->Val);
+     break;
+ }}
+ return D;
+}
+//-----------------------------------------------------------------------------
+void CalcKRazm(Vary*V){
+ List *LOld=L;
+ L=TakeList(L"ÐÀÇÌÅÐÍÎÑÒÈ");
+ V->Krazm=ValKRazm(V->Razm);
+ L=LOld;
+}
+//-----------------------------------------------------------------------------
+
 
