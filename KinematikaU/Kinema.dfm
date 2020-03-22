@@ -2,12 +2,12 @@ object FormKinema: TFormKinema
   Left = 197
   Top = 175
   ActiveControl = TabControl
-  ClientHeight = 417
-  ClientWidth = 878
+  ClientHeight = 513
+  ClientWidth = 1080
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -10
+  Font.Height = -13
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   KeyPreview = True
@@ -18,23 +18,18 @@ object FormKinema: TFormKinema
   OnKeyUp = FormKeyUp
   OnPaint = FormPaint
   OnResize = FormResize
-  OnShow = FormShow
-  PixelsPerInch = 96
-  TextHeight = 13
+  PixelsPerInch = 120
+  TextHeight = 16
   object TabControl: TTabControl
     Left = 0
-    Top = 239
-    Width = 878
-    Height = 158
-    Margins.Left = 2
-    Margins.Top = 2
-    Margins.Right = 2
-    Margins.Bottom = 2
+    Top = 294
+    Width = 1080
+    Height = 194
     Align = alBottom
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -12
-    Font.Name = 'MS Sans Serif'
+    Font.Height = -15
+    Font.Name = 'Times New Roman'
     Font.Style = []
     OwnerDraw = True
     ParentFont = False
@@ -44,58 +39,29 @@ object FormKinema: TFormKinema
     OnChange = TabControlChange
     OnDrawTab = TabControlDrawTab
     object ImageGraph: TImage
-      Left = 390
-      Top = 52
-      Width = 85
-      Height = 85
-      Margins.Left = 2
-      Margins.Top = 2
-      Margins.Right = 2
-      Margins.Bottom = 2
+      Left = 480
+      Top = 64
+      Width = 105
+      Height = 105
       OnMouseDown = ImageGraphMouseDown
     end
     object PhonImage: TImage
-      Left = 267
-      Top = 52
-      Width = 85
-      Height = 85
-      Margins.Left = 2
-      Margins.Top = 2
-      Margins.Right = 2
-      Margins.Bottom = 2
-    end
-    object CppWebBrowser: TCppWebBrowser
-      Left = 2
-      Top = 19
-      Width = 802
-      Height = 45
-      Margins.Left = 2
-      Margins.Top = 2
-      Margins.Right = 2
-      Margins.Bottom = 2
-      TabOrder = 1
-      ControlData = {
-        4C000000E4520000A70400000000000000000000000000000000000000000000
-        000000004C000000000000000000000001000000E0D057007335CF11AE690800
-        2B2E126208000000000000004C0000000114020000000000C000000000000046
-        8000000000000000000000000000000000000000000000000000000000000000
-        00000000000000000100000000000000000000000000000000000000}
+      Left = 328
+      Top = 64
+      Width = 105
+      Height = 105
     end
     object RichEditInp: TRichEdit
       Left = 4
-      Top = 98
-      Width = 870
-      Height = 56
+      Top = 120
+      Width = 1072
+      Height = 70
       Hint = #1055#1088#1086#1089#1084#1086#1090#1088' '#1087#1088#1086#1085#1091#1084#1077#1088#1086#1074#1072#1085#1085#1099#1093' '#1089#1090#1088#1086#1082' '#1092#1072#1081#1083#1072'  '#1080#1089#1093#1086#1076#1085#1099#1093' '#1076#1072#1085#1085#1099#1093
-      Margins.Left = 2
-      Margins.Top = 2
-      Margins.Right = 2
-      Margins.Bottom = 2
       Align = alBottom
       DragCursor = crNo
       Font.Charset = RUSSIAN_CHARSET
       Font.Color = clWindowText
-      Font.Height = -16
+      Font.Height = -20
       Font.Name = 'MS Sans Serif'
       Font.Style = []
       Lines.Strings = (
@@ -110,35 +76,42 @@ object FormKinema: TFormKinema
       WordWrap = False
       Zoom = 100
     end
+    object CppWebBrowser: TCppWebBrowser
+      Left = 4
+      Top = 6
+      Width = 1003
+      Height = 114
+      Align = alLeft
+      TabOrder = 1
+      ExplicitHeight = 156
+      ControlData = {
+        4C000000EE5200006D0900000000000000000000000000000000000000000000
+        000000004C000000000000000000000001000000E0D057007335CF11AE690800
+        2B2E126208000000000000004C0000000114020000000000C000000000000046
+        8000000000000000000000000000000000000000000000000000000000000000
+        00000000000000000100000000000000000000000000000000000000}
+    end
   end
   object GroupBox: TGroupBox
-    Left = 65
-    Top = 111
-    Width = 227
-    Height = 105
-    Margins.Left = 2
-    Margins.Top = 2
-    Margins.Right = 2
-    Margins.Bottom = 2
+    Left = 80
+    Top = 136
+    Width = 279
+    Height = 130
     Caption = ' '#1044#1080#1089#1082#1088#1077#1090#1085#1086#1089#1090#1100' '#1090#1072#1073#1083#1080#1094' '
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
-    Font.Height = -12
+    Font.Height = -15
     Font.Name = 'MS Sans Serif'
     Font.Style = []
     ParentFont = False
     TabOrder = 1
     Visible = False
     object ButtonOKCountTab: TButton
-      Left = 135
-      Top = 20
-      Width = 80
-      Height = 20
+      Left = 166
+      Top = 25
+      Width = 99
+      Height = 24
       Hint = #1042#1074#1086#1076' '#1085#1072#1073#1088#1072#1085#1085#1086#1075#1086' '#1095#1080#1089#1083#1072' '#1090#1086#1095#1077#1082' '#1090#1072#1073#1083#1080#1094#1099
-      Margins.Left = 2
-      Margins.Top = 2
-      Margins.Right = 2
-      Margins.Bottom = 2
       BiDiMode = bdLeftToRight
       Caption = #1042#1074#1077#1089#1090#1080
       Default = True
@@ -149,14 +122,10 @@ object FormKinema: TFormKinema
       OnClick = ButtonOKCountTabClick
     end
     object UpDownCountTab: TUpDown
-      Left = 73
-      Top = 20
-      Width = 16
-      Height = 21
-      Margins.Left = 2
-      Margins.Top = 2
-      Margins.Right = 2
-      Margins.Bottom = 2
+      Left = 90
+      Top = 25
+      Width = 20
+      Height = 24
       Associate = EditCountTab
       Min = 10
       Max = 10000
@@ -165,14 +134,10 @@ object FormKinema: TFormKinema
       Thousands = False
     end
     object EditCountTab: TEdit
-      Left = 14
-      Top = 20
-      Width = 59
-      Height = 21
-      Margins.Left = 2
-      Margins.Top = 2
-      Margins.Right = 2
-      Margins.Bottom = 2
+      Left = 17
+      Top = 25
+      Width = 73
+      Height = 24
       TabOrder = 2
       Text = '10000'
       OnExit = EditCountTabExit
@@ -180,41 +145,29 @@ object FormKinema: TFormKinema
       OnKeyPress = EditCountTabKeyPress
     end
     object ButtonCancel: TButton
-      Left = 135
-      Top = 46
-      Width = 80
-      Height = 20
-      Margins.Left = 2
-      Margins.Top = 2
-      Margins.Right = 2
-      Margins.Bottom = 2
+      Left = 166
+      Top = 57
+      Width = 99
+      Height = 24
       Cancel = True
       Caption = #1054#1090#1084#1077#1085#1072
       TabOrder = 3
       OnClick = ButtonCancelClick
     end
     object ButtonMax: TButton
-      Left = 8
-      Top = 46
-      Width = 80
-      Height = 20
-      Margins.Left = 2
-      Margins.Top = 2
-      Margins.Right = 2
-      Margins.Bottom = 2
+      Left = 10
+      Top = 57
+      Width = 98
+      Height = 24
       Caption = #1052#1072#1082#1089#1080#1084#1091#1084
       TabOrder = 4
       OnClick = ButtonMaxClick
     end
     object RadioGroupSec: TRadioGroup
       Left = 2
-      Top = 66
-      Width = 223
-      Height = 37
-      Margins.Left = 2
-      Margins.Top = 2
-      Margins.Right = 2
-      Margins.Bottom = 2
+      Top = 82
+      Width = 275
+      Height = 46
       Align = alBottom
       BiDiMode = bdLeftToRight
       Columns = 2
@@ -228,7 +181,7 @@ object FormKinema: TFormKinema
   object ToolBar: TToolBar
     Left = 0
     Top = 0
-    Width = 878
+    Width = 1080
     Height = 29
     ButtonHeight = 24
     Caption = 'ToolBar'
@@ -402,105 +355,72 @@ object FormKinema: TFormKinema
   end
   object Panel: TPanel
     Left = 0
-    Top = 397
-    Width = 878
-    Height = 20
-    Margins.Left = 2
-    Margins.Top = 2
-    Margins.Right = 2
-    Margins.Bottom = 2
+    Top = 488
+    Width = 1080
+    Height = 25
     Align = alBottom
     Caption = 'Panel'
     TabOrder = 3
     object CGauge: TCGauge
-      Left = 714
+      Left = 879
       Top = 1
-      Width = 163
-      Height = 18
-      Margins.Left = 2
-      Margins.Top = 2
-      Margins.Right = 2
-      Margins.Bottom = 2
+      Width = 200
+      Height = 23
       Align = alRight
       BackColor = clBtnFace
-      ExplicitHeight = 19
     end
     object StatusBar: TStatusBar
       Left = 1
       Top = 1
       Width = 456
-      Height = 18
-      Margins.Left = 2
-      Margins.Top = 2
-      Margins.Right = 2
-      Margins.Bottom = 2
+      Height = 23
       Align = alLeft
       Panels = <>
       SimplePanel = True
     end
   end
   object GroupBoxEps: TGroupBox
-    Left = 303
-    Top = 133
-    Width = 234
-    Height = 82
-    Margins.Left = 2
-    Margins.Top = 2
-    Margins.Right = 2
-    Margins.Bottom = 2
+    Left = 373
+    Top = 164
+    Width = 288
+    Height = 100
     Caption = ' '#1050#1086#1101#1092#1092#1080#1094#1080#1077#1085#1090' '#1074#1099#1088#1072#1074#1085#1080#1074#1072#1085#1080#1103' '#1084#1072#1089#1096#1090#1072#1073#1086#1074' '
     Color = clActiveCaption
     ParentColor = False
     TabOrder = 4
     Visible = False
     object EditEps: TEdit
-      Left = 8
-      Top = 16
-      Width = 113
-      Height = 21
-      Margins.Left = 2
-      Margins.Top = 2
-      Margins.Right = 2
-      Margins.Bottom = 2
+      Left = 10
+      Top = 20
+      Width = 139
+      Height = 24
       TabOrder = 0
       Text = '1'
     end
     object ButtonEpsOK: TButton
-      Left = 144
-      Top = 16
-      Width = 80
-      Height = 25
-      Margins.Left = 2
-      Margins.Top = 2
-      Margins.Right = 2
-      Margins.Bottom = 2
+      Left = 177
+      Top = 20
+      Width = 99
+      Height = 30
       Caption = 'OK'
       Default = True
       TabOrder = 1
       OnClick = ButtonEpsOKClick
     end
     object ButtonEpsCancel: TButton
-      Left = 8
-      Top = 48
-      Width = 80
-      Height = 25
-      Margins.Left = 2
-      Margins.Top = 2
-      Margins.Right = 2
-      Margins.Bottom = 2
+      Left = 10
+      Top = 59
+      Width = 98
+      Height = 31
       Caption = #1054#1090#1084#1077#1085#1072
       TabOrder = 2
       OnClick = ButtonEpsCancelClick
     end
     object UpDownEps: TUpDown
-      Left = 121
-      Top = 16
-      Width = 16
-      Height = 21
-      Margins.Left = 2
-      Margins.Top = 2
-      Margins.Right = 2
-      Margins.Bottom = 2
+      Left = 149
+      Top = 20
+      Width = 20
+      Height = 24
       Associate = EditEps
       Min = 1
       Position = 1
@@ -682,17 +602,14 @@ object FormKinema: TFormKinema
       object mToProcKoordPoint: TMenuItem
         Caption = #1054#1087#1088#1086#1094#1077#1076#1091#1088#1080#1090#1100' '#1082#1086#1086#1088#1076#1080#1085#1072#1090#1099' '#1090#1086#1095#1077#1082
         ImageIndex = 45
-        OnClick = mToProcKoordPointClick
       end
       object mCreateProcIdentSizes: TMenuItem
         Caption = #1057#1086#1079#1076#1072#1090#1100' '#1087#1088#1086#1094#1077#1076#1091#1088#1091' '#1080#1076#1077#1085#1090#1080#1092#1080#1082#1072#1094#1080#1080' '#1088#1072#1079#1084#1077#1088#1086#1074
         ImageIndex = 45
-        OnClick = mCreateProcIdentSizesClick
       end
       object mCreateProcIdentNewtons: TMenuItem
         Caption = #1057#1086#1079#1076#1072#1090#1100' '#1087#1088#1086#1094#1077#1076#1091#1088#1091' '#1080#1076#1077#1085#1090#1080#1092#1080#1082#1072#1094#1080#1080' '#1084#1077#1090#1086#1076#1086#1084' '#1053#1100#1102#1090#1086#1085#1072
         ImageIndex = 45
-        OnClick = mCreateProcIdentNewtonsClick
       end
     end
   end
@@ -714,7 +631,7 @@ object FormKinema: TFormKinema
     Left = 232
     Top = 32
     Bitmap = {
-      494C010137003B00600010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010137003B00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000040000000E0000000010020000000000000E0
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

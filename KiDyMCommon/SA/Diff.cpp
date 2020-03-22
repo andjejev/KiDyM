@@ -2338,9 +2338,7 @@ double ValKRazm(Form F){   //Расчет переводного коэффициента размерности
  switch(F.C->Atr){
   case CNST : D=1.0; break;
   case VARY :
-   if(FindVary(F.V->Name,&V))
-    D=V->Znach.B->L.C->Val;
-   else D=1.0;
+   D=F.V->Krazm*Val(F.V->Znach);
    break;
   case BNOP:
    u=ValKRazm(F.B->L);

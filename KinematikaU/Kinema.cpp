@@ -46,11 +46,10 @@ using namespace std;
 extern TFormOper *FormOper;
 extern TFormColors *FormColors;
 extern TFormParamPrint *FormParamPrint;
-//extern TFormOtchet *FormOtchet;
-extern PACKAGE TFormOtchet *FormOtchet;
+extern TFormOtchet *FormOtchet;
 extern Cnst *Nul,*Pust;
 extern List *LBeg;
-extern bool IsError,IsSyntError,OWN,SMALLFONT;
+extern bool IsError,IsSyntError,OWN,SMALLFONT,ISRAZM;
 extern long PozFile;
 extern List *L;
 extern wchar_t InpFile[],ErrFile[],Inf[],DgsFile[],HtmFile[],OutFile[],OprFile[],
@@ -87,7 +86,7 @@ bool NoCalc,IsNoCalc,GRAPHICS,SHLEIF,Otladka,PRINTABL=true,
  VISIBLEKINETICENERGY,OTLADKA,VISIBLEDISSIPFUNCTION,
  VISIBLEPOTENENERGY,VISIBLEAPPELFUNCTION,ISINCOMPLETEIF,
  WriteRezFile,INVERSE,LAGRANGE,*BORDER,REPVARNACNST=true,CPP,
- PRINTVARS,ISRAZM,ALL_ANGLES,UNICOD;
+ PRINTVARS,ALL_ANGLES,UNICOD;
 double Kbmp=5.0/4.0,KTime=1.0,**Qxyz,**Qmf,*YK,*YKmin,*YKmax,
  *YKans,*dYK,*Y,**Q,**S,Eta,Eps,X_n,X_k,Y_n,Y_k,Z_n,Z_k,Sg,
  KEqvScal=2.0,*Qtz,*q,Tend,MSt[3],Min[3],Max[3],Slv[3],Spr[3],
@@ -129,17 +128,13 @@ void CalcUqCOM(double *qk,double *Ss,double *Cm,double *Ms,double **Uq);
 int NewtonOK(double t){
  static Rez=1; int i,j; Form *afi; Cord *q; Root *I; bool Ex,ForPO=false,OUT_=false;
  double *y,*dy,*ai,*bi,D;
-// double qkb[]={-0.00836, 0.578968, 0.883845, 0.304876, 0.0,  0.00836,
-//                0.00836, 0.583037, 0.891762, 0.304665, 0.0, -0.00836};
  double qkb[]={ 0.0, 0.56, 1, 0.485, 0.0,  0.013,
-                0.0, 0.56, 1, 0.485, 0.0, -0.013};
-// for(int i=0;i<12;i++) YK[i]=q0[i];//начальное приближение
+				0.0, 0.56, 1, 0.485, 0.0, -0.013};
  if(!Rez) return -1;
  NoCalc=false;
  L->Time->Val=t;
-// for(q=L->K,y=YK;q;q=q->Sled) q->V->Val=*y++;
- for(int k=0;k<MAXITER;k++){ //swprintf(Inf,L"%d-я итерация\n",k);
-  ClearVar(); //PRINTVARS=true;
+ for(int k=0;k<MAXITER;k++){
+  ClearVar();
   for(q=L->K,y=YK;q;q=q->Sled)
    q->V->Val=*y++;
   if(ForPO){
@@ -173,17 +168,12 @@ int NewtonOK(double t){
   if(!Rez){
    if(!SLE) SLE=new TStringList;
    if(SLE){
-//   if(ERRFILE=_wfopen(ErrFile,L"a")){
 	wcscpy(Serr,L"A="); SLE->Add(Serr); Serr[0]='\0'; serr=Serr;
-//	fputws(L"A=\n",ERRFILE);
 	for(int i=0;i<N;i++){
-//	 for(int j=0;j<N;j++) fwprintf(ERRFILE,L"%g\t",MA[i][j]);
 	 for(int j=0;j<N;j++) serr+=swprintf(serr,L"%g\t",MA[i][j]);
-//	 fputwc('\n',ERRFILE);
 	 SLE->Add(Serr); Serr[0]='\0'; serr=Serr;
 	}
 	SLE->SaveToFile(ErrFile); Serr[0]='\0'; serr=Serr;
-//    fclose(ERRFILE);
    }
    Application->MessageBox(L"Система уравнений несовместна!\n"
 	L"См. закладку ОШИБКИ",L"Ошибка!",MB_OK);
@@ -329,17 +319,12 @@ void CalcR(double t){
  if(!Rez){
   if(!SLE) SLE=new TStringList;
   if(SLE){
-//   if(ERRFILE=_wfopen(ErrFile,L"a")){
    wcscpy(Serr,L"A="); SLE->Add(Serr); Serr[0]='\0'; serr=Serr;
-//	fputws(L"A=\n",ERRFILE);
    for(int i=0;i<N;i++){
-//	 for(int j=0;j<N;j++) fwprintf(ERRFILE,L"%g\t",MA[i][j]);
 	for(int j=0;j<N;j++) serr+=swprintf(serr,L"%g\t",MA[i][j]);
-//	 fputwc('\n',ERRFILE);
 	SLE->Add(Serr); Serr[0]='\0'; serr=Serr;
    }
    SLE->SaveToFile(ErrFile); Serr[0]='\0'; serr=Serr;
-//    fclose(ERRFILE);
   }
   Application->MessageBox(L"Система уравнений несовместна!\n"
    L"См. закладку ОШИБКИ",L"Ошибка!",MB_OK);
@@ -457,11 +442,11 @@ bool InverseKinByVelos(int Wg,double dt){
       S[i][K]=YKmin[i+N];
      else if(D>YKmax[i+N])
       S[i][K]=YKmax[i+N];
-     BORDER[i+N]=true;
+	 BORDER[i+N]=true;
    }}
    L->Time->Val=t;
    for(yk=YK,q=L->K,i=0;q;q=q->Sled,i++)
-    q->V->Val=*yk++;
+	q->V->Val=*yk++;
  }}
  free(RK_z); free(RK_y1); free(RK_y2); free(RK_y3); free(RK_w);
  return true;
@@ -481,29 +466,30 @@ bool InverseKinOfCoord(int &Wg,int &Kmin,int Kmax,double dt){
    t-=dt; L->Time->Val=t;
    for(i=0;i<N;i++) YK[i]=Y[i];
    for(q=L->K,i=0;q;q=q->Sled,i++)
-    q->V->Val=*y++;
+	q->V->Val=*y++;
    break;
   }
   else{ Magazine *M;//при удаче сохраняем новые значения
    for(q=L->K,i=0;i<N;q=q->Sled,i++){
-    Q[i][K]=ALL_ANGLES||Mangles&&FindMagazine(Mangles,q->V->Name,&M)?
-            NormAngle(YKans[i]):YKans[i];
+	Q[i][K]=ALL_ANGLES||Mangles&&FindMagazine(Mangles,q->V->Name,&M)?
+			NormAngle(YKans[i]):YKans[i];
 //     if(FindInstLast(L"ПРОИЗВОДНЫЕ ОБОБЩЕННЫХ КООРДИНАТ")){
-     double D=(Q[i][K]-Q[i][K-1])/dt;
-     if(!BORDER||(D>=YKmin[i+N])&&(D<=YKmax[i+N])) S[i][K]=D;
-     else{
-      if(D<YKmin[i+N])
-       S[i][K]=YKmin[i+N];
-      else if(D>YKmax[i+N])
-       S[i][K]=YKmax[i+N];
-      BORDER[i+N]=true;
-     }
+	 double D=(Q[i][K]-Q[i][K-1])/dt;
+	 if(!BORDER||(D>=YKmin[i+N])&&(D<=YKmax[i+N])) S[i][K]=D;
+	 else{
+	  if(D<YKmin[i+N])
+	   S[i][K]=YKmin[i+N];
+	  else if(D>YKmax[i+N])
+	   S[i][K]=YKmax[i+N];
+	  BORDER[i+N]=true;
+	 }
 //     }
    }
    L->Time->Val=t;
    for(yk=YK,q=L->K,i=0;q;q=q->Sled,i++)
-    q->V->Val=*yk++;
- }}
+	q->V->Val=*yk++;
+  }
+ }
  DeltaTime=(clock()-timer);
  RezTime=(double)DeltaTime/CLK_TCK;
  return true;
@@ -546,79 +532,55 @@ void CalcQSplns(){
 //Уточним начальные условия
    Kmax=Kmin=KIter=NewtonOK(t);
    for(q=L->K,i=0;i<N;q=q->Sled,i++)
-    Q[i][0]=ALL_ANGLES||Mangles&&FindMagazine(Mangles,q->V->Name,&M)?
-            NormAngle(YK[i]):YK[i];
+	Q[i][0]=ALL_ANGLES||Mangles&&FindMagazine(Mangles,q->V->Name,&M)?
+			NormAngle(YK[i]):YK[i];
    if(NoCalc) return;
 //  }
   FormKinema->CGauge->Progress++;
   T=clock();
   switch(VELOKIN){
    case 0:
-    InverseKinOfCoord(Wg,Kmin,Kmax,dt);
-    break;
+	InverseKinOfCoord(Wg,Kmin,Kmax,dt);
+	break;
    case 1:
-    InverseKinByVelos(Wg,dt);
-    break;
+	InverseKinByVelos(Wg,dt);
+	break;
    case 2:
-    InverseKinByVelos(Wg,Kmin,Kmax,dt);
+	InverseKinByVelos(Wg,Kmin,Kmax,dt);
   }
   T=(clock()-T)/CLK_TCK;
 //  if(FindInstLast(L"ПРОИЗВОДНЫЕ ОБОБЩЕННЫХ КООРДИНАТ"))
    for(i=0;i<N;i++) S[i][0]=S[i][1];
   if(BORDER){
    for(q=L->K,i=0;i<N;q=q->Sled,i++){
-    if(BORDER[i]){ wchar_t *inf=Inf;
-     inf+=swprintf(inf,
-      L"для обобщенных координат:\n%s",q->V->Name);
-     if(q->Sled){
-      for(q=q->Sled,j=i+1;q;q=q->Sled,j++)
-       if(BORDER[j]) inf+=swprintf(inf,L", %s",q->V->Name);
-     }
-     Application->MessageBoxA(Inf,L"Нарушены границы",MB_OK);
-     break;
-   }}
-/*
-   for(q=L->VK,i=0;q;q=q->Sled,i++){
-    if(BORDER[i+N]){ wchar_t *inf=Inf;
-     inf+=swprintf(inf,
-      L"для обобщенных скоростей:\n%s",q->V->Name);
-     if(q->Sled){
+	if(BORDER[i]){ wchar_t *inf=Inf;
+	 inf+=swprintf(inf,
+	  L"для обобщенных координат:\n%s",q->V->Name);
+	 if(q->Sled){
 	  for(q=q->Sled,j=i+1;q;q=q->Sled,j++)
-	   if(BORDER[j+N]) inf+=swprintf(inf,L", %s",q->V->Name);
+	   if(BORDER[j]) inf+=swprintf(inf,L", %s",q->V->Name);
 	 }
 	 Application->MessageBoxA(Inf,L"Нарушены границы",MB_OK);
 	 break;
-   }}
-*/
+	}
+   }
   }
   DeltaTime=(clock()-timer)/CLK_TCK;
-//  if(HTMFILE=_wfopen(HtmFile,L"r+")){
   if(SLH){
    int EndInd=SLH->Count-1; String SEnd=SLH->Strings[EndInd];
-//   if(!fseek(HTMFILE,-Lpodv,2)){
    if(DeltaTime>3600)
 	shtm+=swprintf(shtm,L"<h4 align=\"left\"><font color=\"#009900\">"
 "%d. Время расчета обратной задачи кинематики: %d час. %d мин. %d.%d",
 	 PUNKT++,DeltaTime/3600,(DeltaTime%3600)/60,((DeltaTime%3600)%60),
 	 (int)Round(1000*(T-floor(T))));
-//	 fwprintf(HTMFILE,L"<h4 align=\"left\"><font color=\"#009900\">"
-//"%d. Время расчета обратной задачи кинематики: %d час. %d мин. %d.%d",
-//	  PUNKT++,DeltaTime/3600,(DeltaTime%3600)/60,((DeltaTime%3600)%60),
-//	  (int)Round(1000*(T-floor(T))));
    else if(DeltaTime>60)
 	shtm+=swprintf(shtm,L"<h4 align=\"left\"><font color=\"#009900\">"
 	 L"%d. Время расчета обратной задачи кинематики: %d мин. %d.%d",
 	 PUNKT++,DeltaTime/60,DeltaTime%60,(int)Round(1000*(T-floor(T))));
-//	 fwprintf(HTMFILE,L"<h4 align=\"left\"><font color=\"#009900\">"
-//	  L"%d. Время расчета обратной задачи кинематики: %d мин. %d.%d",
-//	  PUNKT++,DeltaTime/60,DeltaTime%60,(int)Round(1000*(T-floor(T))));
    else{ double D=T-floor(T); int d=Round(1000*(T-floor(T)));
 	shtm+=swprintf(shtm,L"<h4 align=\"left\"><font color=\"#009900\">"
 	 L"%d. Время расчета обратной задачи кинематики: %d.%d",
 	 PUNKT++,DeltaTime,(int)Round(1000*(T-floor(T))));
-//	 fwprintf(HTMFILE,L"<h4 align=\"left\"><font color=\"#009900\">"
-//	  L"%d. Время расчета обратной задачи кинематики: %d.%d",
-//	  PUNKT++,DeltaTime,(int)Round(1000*(T-floor(T))));
    }
    wcscpy(shtm,L" сек.<br>");
    SLH->Add(Shtm); shtm=Shtm;
@@ -629,16 +591,8 @@ void CalcQSplns(){
    SLH->Add(Shtm); shtm=Shtm;
    SLH->Add(SEnd);
    SLH->SaveToFile(HtmFile);
-//	fwprintf(HTMFILE,
-//	 L" сек.\n<br>&nbsp&nbsp&nbsp&nbsp"
-//	 L"Минимальное число итераций составило:&nbsp&nbsp%d, L"
-//			  L"максимальное:&nbsp&nbsp%d, общее:&nbsp&nbsp%d</font></h4>",
-//	 Kmin,Kmax,KIter);
-//	fwprintf(HTMFILE,
-//	 L"<hr><font face=\"Georgia, Times New Roman, Times, serif\""
-//	 L" color=\"#326464\">&copy; %s, %d<br></font><br>\n",Autor,NYear+1900)+1;
-//	fclose(HTMFILE);
- }}//}
+  }
+ }
  FormKinema->StatusBar->SimpleText=SBold;
  wchar_t NameArr[256],NameSpln[256]; Form Ft;
  FormKinema->CGauge->Progress=0; FormKinema->CGauge->Visible=false;
@@ -654,31 +608,29 @@ void CalcQSplns(){
   }
   SQ[i]=TakeSpln(1,Arr,Ft);
  }
-// if(FindInstLast(L"ПРОИЗВОДНЫЕ ОБОБЩЕННЫХ КООРДИНАТ")){
-  SS=(Spln **)calloc(N,SzV);
-  for(i=0;i<N;i++){ Vary *V;
-   swprintf(NameSpln,L"%s'%s",Dseta[i].V->Name,L->Time->Name);
-   swprintf(NameArr,L"%s_t_arr",Dseta[i].V->Name);
-   Arra *Arr=TakeArra(NameArr); Arr->N=2*Wg;
-   Arr->A=(double *)calloc(Arr->N,SzD); t=Tn+dt;
-   for(K=1;K<Wg;K++){
-    double D=(Q[i][K]-Q[i][K-1])/dt;
-    Arr->A[2*K]=t;
-    t+=dt;
-    if(BORDER){
-     if(D<YKmin[i+N])
-      D=YKmin[i+N];
-     else if(D>YKmax[i+N])
-      D=YKmax[i+N];
-    }
-    Arr->A[2*K+1]=D;
+ SS=(Spln **)calloc(N,SzV);
+ for(i=0;i<N;i++){ Vary *V;
+  swprintf(NameSpln,L"%s'%s",Dseta[i].V->Name,L->Time->Name);
+  swprintf(NameArr,L"%s_t_arr",Dseta[i].V->Name);
+  Arra *Arr=TakeArra(NameArr); Arr->N=2*Wg;
+  Arr->A=(double *)calloc(Arr->N,SzD); t=Tn+dt;
+  for(K=1;K<Wg;K++){
+   double D=(Q[i][K]-Q[i][K-1])/dt;
+   Arr->A[2*K]=t;
+   t+=dt;
+   if(BORDER){
+	if(D<YKmin[i+N])
+	 D=YKmin[i+N];
+	else if(D>YKmax[i+N])
+	 D=YKmax[i+N];
    }
-   Arr->A[0]=Tn; Arr->A[1]=Arr->A[3];
-   SS[i]=TakeSpln(1,Arr,Ft);
-   V=TakeVary(NameSpln);
-   V->Znach.P=SS[i];
+   Arr->A[2*K+1]=D;
   }
-// }
+  Arr->A[0]=Tn; Arr->A[1]=Arr->A[3];
+  SS[i]=TakeSpln(1,Arr,Ft);
+  V=TakeVary(NameSpln);
+  V->Znach.P=SS[i];
+ }
  if(YK&&::WriteRezFile) ::SaveRezFile(Wg);
 }
 //---------------------------------------------------------------------------
@@ -738,14 +690,14 @@ void FuncsQ(double t,Magazine *Names,double *Y,bool First){
    if(No) No=N;
    Kt=TMult*Kkadr/1000; N=KolElem(Names);
    if(Qmf){
-    if(N>No){
-     Qmf=(double **)realloc(Qmf,N*SzV);
+	if(N>No){
+	 Qmf=(double **)realloc(Qmf,N*SzV);
 	 for(i=0;i<No;i++) Qmf[i]=(double *)realloc(Qmf[i],(Kt+1)*SzD);
 	 for(;i<N;i++) Qmf[i]=(double *)calloc(Kt+1,SzD);
    }}
    else{
-    Qmf=(double **)calloc(N,SzV);
-    for(i=0;i<N;i++) Qmf[i]=(double *)calloc(Kt+1,SzD);
+	Qmf=(double **)calloc(N,SzV);
+	for(i=0;i<N;i++) Qmf[i]=(double *)calloc(Kt+1,SzD);
    }
    No=N;
  }}
@@ -884,24 +836,6 @@ bool DiagnosOK(Root *I){
   return OKTOFILE=false;
  }
  N=Round(Value(V->Znach));
-/* if(P->Sled){
-  P=P->Sled;
-  if(P->Nam){
-   if(!wcscmp(LowToUpp(P->Nam),L"ВСЕ УГЛЫ"))
-    ALL_ANGLES=true;
-   else if(!wcscmp(LowToUpp(P->Nam),L"УГЛЫ")){
-    for(P=P->R;P;P=P->Sled)
-     if(P->Nam) TakeMagazine(&Mangles,P->Nam);
-  }}
-  else{
-   swprintf(Inf,L"Четвертым параметром в инструкции\n\"%s\"\n"
-    L"должно быть указание, все ли ОК - углы,\n"
-    L"или дано перечисление углов среди ОК\n"
-    L"предложением \"ВСЕ УГЛЫ\" или предложением\n"
-    L"УГЛЫ(<список_имен_ОК_углов>)",I->Name);
-   Application->MessageBoxA(Inf,I->Name,MB_OK);
-   return OKTOFILE=false;
- }}*/
  return OKTOFILE=true;
 }
 //---------------------------------------------------------------------------
@@ -1232,24 +1166,11 @@ bool __fastcall TFormKinema::Kinemat(void){
  ClearVar();
  wcscpy(SBold,StatusBar->SimpleText.c_str());
  StatusBar->SimpleText=L"Вычисление переменных с постоянными значениями";
-// if(CGauge){
-//  int K=0;
-//  for(Vary *V=L->V;V;V=V->Sled)
-//   if(!VarInForm(true,V->Znach,L->Time)&&
-//	  !VassalFromVaryDiap(V->Znach)&&
-//	  !VassalOfKoord(L,V->Znach))
-//	   K++;
-//  CGauge->MaxValue=K; CGauge->Progress=0; //CGauge->ShowText=true;
-// }
  ReplaceVarsToConst(StatusBar,CGauge,false);
  StatusBar->SimpleText=SBold;
  SLH->Add(L"<h4 align=\"left\"><font color=\"#009900\">"
   L"2. Формулы для переменных, не равных нулю:</font></h4>");
  SLH->Add(L"<table width=\"100%\" border=\"1\" style=\"word-wrap: break-word;\">");
-// fwprintf(HTMFILE,
-//  L"<h4 align=\"left\"><font color=\"#009900\">"
-//  L"2. Формулы для переменных, не равных нулю:</font></h4>\n");
-// fwprintf(HTMFILE,L"<table width=\"100%\" border=\"1\">");
  if(CGauge){
   CGauge->MaxValue=KolElem(L->V);
   CGauge->Progress=0; //CGauge->ShowText=true;
@@ -1261,45 +1182,32 @@ bool __fastcall TFormKinema::Kinemat(void){
   if(V->Znach.C->Atr&&((V->Znach.C->Atr!=3)||V->Znach.C!=Nul)){
    if(i>KColumn){
 	i=1;
-//	if(V!=L->V) fwprintf(HTMFILE,L"</tr>\n");
 	if(V!=L->V) SLH->Add(L"</tr>");
    }
-  // if(i==1) fwprintf(HTMFILE,L"<tr>\n");
    if(i==1)	SLH->Add(L"<tr>");
    shtm+=swprintf(shtm=Shtm,
 	L"<td width=\"%0.0f%%\">",Pr);
-//   fwprintf(HTMFILE,L"<td width=\"%0.0f%%\">",Round(100/KColumn));
    if(SMALLFONT) shtm+=swprintf(shtm,L"<font size=-1>");
-//   if(SMALLFONT) fwprintf(HTMFILE,L"<font size=-%d>",1);
 	shtm=FormToStringList(V->Znach,V->Name,Shtm,shtm,SLH,false,&SF);
-//   PrintForm(false,HTMFILE,V->Name,V->Znach);
    if(!V->P&&V->Znach.C->Atr>CNST){
 	shtm+=swprintf(shtm,L" = %g",V->Val);
-//	fwprintf(HTMFILE,L" = %g",V->Val);
 	if(V->Razm.C!=Pust){
 	 shtm+=swprintf(shtm,L", ");
-//	 fputws(L", ",HTMFILE);
 	 shtm=FormToStringList(V->Razm,NULL,Shtm,shtm,SLH,false,&SF);
-//	 PrintForm(false,HTMFILE,NULL,V->Razm);
 	}
 	*shtm++=';'; *shtm='\0';
-//	fputwc(';',HTMFILE);
    }
    if(SMALLFONT){
 	shtm+=swprintf(shtm,L"</font>");
 	SLH->Add(Shtm); *Shtm='\0'; shtm=Shtm;
    }
-//   if(SMALLFONT) fputws(L"</font>\n",HTMFILE);
    shtm+=swprintf(shtm,L"</td>"); i++;
    SLH->Add(Shtm); shtm=Shtm;
-//   fputws(L"</td>\n",HTMFILE); i++;
  }}
  StatusBar->SimpleText=SBold;
  if(CGauge) CGauge->Progress=0;
  shtm+=swprintf(shtm,L"</tr></table>");
  SLH->Add(Shtm); *Shtm='\0'; shtm=Shtm;
-// fwprintf(HTMFILE,L"</tr></table>\n");
-// ReplaceVarsToConst(StatusBar,CGauge,false);
  for(Tv=L->Inst;Tv;Tv=Tv->Sled){
   LowToUpp(Tv->Name);
   if(!wcscmp(Tv->Name,L"СОВМЕСТИТЬ")){
@@ -1521,14 +1429,6 @@ bool __fastcall TFormKinema::Kinemat(void){
   DiagnosOK(OK);
 M:
 //можно все переменные, не зависящие от времени заменить константами
-//  for(Vary *V=L->V;V;V=V->Sled){ double D;
-//   if(!VarInForm(true,V->Znach,L->Time)){
-//    D=Val(V->Znach); V->Znach.C=TakeCnst(D);
-//  }}
-// Lpodv=fwprintf(HTMFILE,
-//  L"<hr><font face=\"Georgia, Times New Roman, Times, serif\""
-//  L" color=\"#326464\">&copy; %s, %d<br></font><br>\n",Autor,NYear+1900)+1;
-// Lpodv+=fwprintf(HTMFILE,L"</body>\n</html>\n")+2;
  SLP=new TStringList;
  swprintf(Shtm,
   L"<hr><font face=\"Georgia, Times New Roman, Times, serif\""
@@ -1540,7 +1440,10 @@ M:
 // fclose(HTMFILE);
  SLH->SaveToFile(HtmFile);
  TabControl->TabIndex=-1;
- MReportClick(NULL);
+ CppWebBrowser->Navigate(HtmFile);
+ CppWebBrowser->Align=alClient;
+ CppWebBrowser->Visible=true;
+ CppWebBrowser->SetFocus();
  return true;
 }
 //---------------------------------------------------------------------------
@@ -1841,11 +1744,6 @@ __fastcall TFormKinema::TFormKinema(TComponent* Owner):TForm(Owner){
   B=*s; *s='\0'; wcscpy(CurrDir,InpFile); *s=B;
  }
  else _wgetcwd(CurrDir,255);
-// wcscpy(ANSIFile,InpFile);
-// if(s=wcsrchr(ANSIFile,L'.')) wcscpy(s+1,L"ansi");
-// swprintf(ConvExe,L"%s\\ASCIItoANSI.exe %s",WORKDIR,InpFile);
-// WinExec(AnsiString(ConvExe).c_str(),0);
-// RichEditInp->Lines->LoadFromFile(ANSIFile);
  if(RichEditInp->Lines->Count) RichEditInp->Clear();
  RichEditInp->Visible=false;
  if(F=_wfopen(InpFile,L"r")){ wchar_t Cod[8];
@@ -1860,11 +1758,7 @@ __fastcall TFormKinema::TFormKinema(TComponent* Owner):TForm(Owner){
  }
  SLM=new TStringList;
  SLM->Assign(RichEditInp->Lines);
-// for(int i=0;i<RichEditInp->Lines->Count;i++)
-//  SLM->Add(RichEditInp->Lines->Strings[i]);
  RichEditInp->Clear();
-// RichEditInp->Visible=true;
-// Lfile=RichEditInp->Text.Length();
  End=TextFromFile(WORKDIR,L"EditKiDyM",&SLK,112);
  Calc1=TextFromFile(WORKDIR,L"EditKiDyM",&SLK,111); L1=wcslen(Calc1);
  Calc2=TextFromFile(WORKDIR,L"EditKiDyM",&SLK,159); L2=wcslen(Calc2);
@@ -1930,7 +1824,6 @@ __fastcall TFormKinema::TFormKinema(TComponent* Owner):TForm(Owner){
  if(!_waccess(OprFile,0)) _wunlink(OprFile);
  if(!_waccess(HtmFile,0)) _wunlink(HtmFile);
  FileToOpt();
-// RichEditInp->Clear();
  InitCA();
  RichEditInp->Font->Name=NameFontEd; RichEditInp->Font->Size=SizeFontEd;
  RichEditInp->Font->Color=ColorFontEd;
@@ -1952,13 +1845,10 @@ __fastcall TFormKinema::TFormKinema(TComponent* Owner):TForm(Owner){
  Caption=INVERSE?"Обратная задача кинематики: ":"Кинематика: ";
  if(InpFile[0]){ wchar_t *inf;
   swprintf(Inf,InpFile); inf=wcsrchr(Inf,'.'); inf+=swprintf(inf,L".kdm");
-//  Kinst=KolInst(TextFromFile(WORKDIR,L"EditKiDyM",&SLK,111))+
-//   KolInst(TextFromFile(WORKDIR,L"EditKiDyM",&SLK,159));
   if(Kinst>1) swprintf(inf,L" (расчет №%d)",Kinst);
   Caption=Caption+Inf;
   wcscpy(Inf,(s=wcsrchr(InpFile,'\\'))?(s+1):InpFile);
   if(t=wcsrchr(Inf,'.')) wcscpy(t,L".KDM"); else wcscat(Inf,L".KDM");
-//  Application->Title=Inf;
  }
  MOperators->Visible=false;
  TabControl->Align=alClient;
@@ -2099,7 +1989,6 @@ void __fastcall TFormKinema::ButtonOKCountTabClick(TObject *Sender){
 //---------------------------------------------------------------------------
 void __fastcall TFormKinema::FontDialogApply(TObject *Sender, HWND Wnd){
  RichEditInp->Font=FontDialog->Font;
-// RichEditOpr->Font=FontDialog->Font;
  ColorFont=FontDialog->Font->Color;
  TabControl->Canvas->Font=FontDialog->Font;
  NameFont=FontDialog->Font->Name;
@@ -2299,7 +2188,7 @@ void __fastcall TFormKinema::Metrica(TCanvas *Canvas,Magazine *Names){
   Names?(2+KolElem(Names))*(h+1):NameZ.IsEmpty()?(4*h+5):(5*h+6);
  swprintf(Inf,L"%d",TabControl->TabIndex);
  Wo=Canvas->TextWidth(L"000.000E+00"); Wu=PRNTOPRIGHT?Wo:0;
- if(NameZ.IsEmpty()){ Hy=h; /*PRNTOPRIGHT?h:PRINTABL?(h/2):0;*/ Hx=h; }
+ if(NameZ.IsEmpty()){ Hy=h; Hx=h; }
  else Hy=Hx=0;
  Hc=h;
  Wg=W-PoleLeft-PoleRight-Wo-Wu; Wgmm=Wg*25.4/LPx;
@@ -2819,7 +2708,7 @@ void __fastcall TFormKinema::DrawSetka(TCanvas *Canvas,Magazine *Names){
    Canvas->TextOut(Xk-l-B,y-h/2,Inf);
    if(SOVM){
     Canvas->MoveTo(Xk+Wg,y-1); Canvas->LineTo(Xk+Wg-5,y-1);
-    Canvas->MoveTo(Xk+Wg,y+1); Canvas->LineTo(Xk+Wg-5,y+1);
+	Canvas->MoveTo(Xk+Wg,y+1); Canvas->LineTo(Xk+Wg-5,y+1);
     j=Round((yk[1]/MSt[2]+(i*MstT[1]*Sg-yk[0])/MSt[1])/dS[1]);
     L=swprintf(Inf,L"%g",j*MstT[2]*Sg);
     if(L>9){
@@ -2897,7 +2786,7 @@ void __fastcall TFormKinema::DrawSetka(TCanvas *Canvas,Magazine *Names){
   else{
    if(Tabl){
     inf+=swprintf(inf=Inf,Tabl[0].Vy->Name);
-    if(FindVary(Tabl[0].Vy->Name,&V)){
+	if(FindVary(Tabl[0].Vy->Name,&V)){
      if(V->Razm.C!=Pust){
       FormToStr(V->Razm,&RazmY,false);
       inf+=swprintf(inf=Inf,L"%s[%s]",V->Name,RazmY);
@@ -3001,7 +2890,7 @@ void __fastcall TFormKinema::DrawGrafik(TCanvas *Canvas,Magazine *Names){
    X=GodoGraf?FuncX(0,t):t;
    Vp=Tabl[0].Vy; d=Func(t);
    if(!NoCalc){
-    P[0][j].x=Xk+(int)Round((X-xk)/MSt[0]);
+	P[0][j].x=Xk+(int)Round((X-xk)/MSt[0]);
     P[0][j].y=Yk-(int)Round((d-yk0)/MSt1);
     if(SOVM){ yk0=yk[1]; MSt1=MSt[2]; }
     if(Prntr&&(Canvas==Prntr->Canvas)&&!ColorPrint||
@@ -3027,7 +2916,7 @@ void __fastcall TFormKinema::DrawGrafik(TCanvas *Canvas,Magazine *Names){
    if(Prntr&&(Canvas==Prntr->Canvas)&&!ColorPrint||
       ImageBMP&&(Canvas==ImageBMP->Canvas)&&!ColorBMP){
     Canvas->Pen->Width=1;
-    switch(i){
+	switch(i){
      case 0: Canvas->Pen->Style=psSolid;      break;
      case 1: Canvas->Pen->Style=psDash;       break;
      case 2: Canvas->Pen->Style=psDot;        break;
@@ -3066,7 +2955,6 @@ void __fastcall TFormKinema::DrawGrafik(TCanvas *Canvas,Magazine *Names){
   for(int j=1;j<Wg;j++){
    t=Tn+j*dt; L->Time->Val=t; ClearVar();
    d=Func(t);
-//PRINTVARS=false;
    if(!NoCalc){
     x=Xk+Round((t-xk)/MSt[0]); y=Yk-Round((d-yk[0])/MSt[1]);
     Canvas->LineTo(x,y);
@@ -3081,7 +2969,7 @@ void __fastcall TFormKinema::DrawGrafik(TCanvas *Canvas,Magazine *Names){
 //---------------------------------------------------------------------------
 void __fastcall TFormKinema::GrafFunc(TCanvas *Canvas){
  Metrica(Canvas,NULL);
-// CppWebBrowser->Height=0; CppWebBrowser->Width=0;
+ CppWebBrowser->Height=0; CppWebBrowser->Width=0;
  if(PRINTHEAD) DrawHead(Canvas,Head);
  if(KP[0]==1) return;
  CGauge->ShowText=true;
@@ -3327,7 +3215,7 @@ bool __fastcall TFormKinema::DefMSTGodo3D(){
        if(z>Max[2]){ Max[2]=Hig[2]=z; Hig[0]=x; Hig[1]=y; }
        CGauge->Progress++;
      }}
-     for(i=0,x=X_n+0.5*dx;i<CountTabl;i++,x+=dx){
+	 for(i=0,x=X_n+0.5*dx;i<CountTabl;i++,x+=dx){
       for(j=0,y=Y_n+0.5*dy;j<CountTabl;j++,y+=dy){
        z=*q++;
        if(z<Min[2]){ Min[2]=Low[2]=z; Low[0]=x; Low[1]=y; }
@@ -3353,7 +3241,7 @@ bool __fastcall TFormKinema::DefMSTGodo3D(){
        if(NoCalc) return false;
        if(z<Min[2]){ Min[2]=Low[2]=z; Low[0]=x; Low[1]=y; }
        if(z>Max[2]){ Max[2]=Hig[2]=z; Hig[0]=x; Hig[1]=y; }
-       CGauge->Progress++;
+	   CGauge->Progress++;
     }}}
     SaveRezFile(File_tz);
   }}
@@ -3587,7 +3475,7 @@ void __fastcall TFormKinema::PrepDraw3D(TCanvas *Canvas){
    double dFi  =2*M_PI*TimerArea->Interval/15000.0,
     dTeta=2*M_PI*TimerArea->Interval/25000.0,
     dPsi =2*M_PI*TimerArea->Interval/5000.0;
-    cFi-=sFi*dFi; sFi+=cFi*dFi; cPsi-=sPsi*dPsi; sPsi+=cPsi*dPsi;
+	cFi-=sFi*dFi; sFi+=cFi*dFi; cPsi-=sPsi*dPsi; sPsi+=cPsi*dPsi;
 	cTeta-=sTeta*dTeta; sTeta+=cTeta*dTeta;
    DrawArea(Canvas,true);
  }}
@@ -3665,7 +3553,7 @@ bool __fastcall TFormKinema::DrawGraf(TCanvas *Canvas){
      tbSpline->Enabled=false; VgX->P=0;
      if(P->R&&(KolElem(P->R)==2)){
       X_n=P->R->Nam ? Val(StrToForm(P->R->Nam)) : P->R->Val;
-      X_k=P->R->Sled->Nam ? Val(StrToForm(P->R->Sled->Nam)) : P->R->Sled->Val;
+	  X_k=P->R->Sled->Nam ? Val(StrToForm(P->R->Sled->Nam)) : P->R->Sled->Val;
 	 }
      else if(P->Sled&&P->Sled->Sled){ P=P->Sled;
       X_n=P->Nam ? Val(StrToForm(P->Nam)) : P->Val; P=P->Sled;
@@ -3691,7 +3579,7 @@ bool __fastcall TFormKinema::DrawGraf(TCanvas *Canvas){
      }
      else if(P->Sled&&P->Sled->Sled){ P=P->Sled;
       Y_n=P->Nam ? Val(StrToForm(P->Nam)) : P->Val; P=P->Sled;
-      Y_k=P->Nam ? Val(StrToForm(P->Nam)) : P->Val;
+	  Y_k=P->Nam ? Val(StrToForm(P->Nam)) : P->Val;
      }
      else{
       swprintf(Inf,L"Нельзя получить значения для границ диапазона\n"
@@ -3717,7 +3605,7 @@ bool __fastcall TFormKinema::DrawGraf(TCanvas *Canvas){
    if(VgY->Razm.C!=Pust) FormToStr(VgY->Razm,&RazmY,false);
    else RazmY=L"";
    if(VgX->Znach==Pust){
-    double Tno=Tn,Tko=Tk; Parm *P; int PP=VgX->P; Root *I;
+	double Tno=Tn,Tko=Tk; Parm *P; int PP=VgX->P; Root *I;
     if(((I=FindInstLast(L"ДИАПАЗОН"))||(I=FindInstLast(L"ДИАПАЗОНЫ")))&&
        FindParm(I->First,VgX->Name,&P)){
      if(P->R&&(KolElem(P->R)==2)){
@@ -3743,7 +3631,7 @@ bool __fastcall TFormKinema::DrawGraf(TCanvas *Canvas){
      swprintf(Inf,L"Не заданы границы диапазона изменения\n"
       L"переменной \"%s\" инструкцией \"ДИАПАЗОН[Ы]\"",VgX->Name);
      Application->MessageBox(Inf,L"Ошибка",MB_OK);
-     return false;
+	 return false;
    }}
    else{
     VgXt=DifBy(VgX->Znach,L->Time); VgYt=DifBy(VgY->Znach,L->Time);
@@ -3892,12 +3780,10 @@ void SaveOK(void){
   Fi=_wfopen(File,L"r"); Fo=_wfopen(FileNew,L"w");
   for(i=1;i<N;i++)
    if(fgetws(Inf,1023,Fi)&&((n=_wtoi(Inf))<N))
-    fputws(Inf,Fo);
+	fputws(Inf,Fo);
   fwprintf(Fo,L"%2.2d; ",N);
   for(Cord *q=L->K;q;q=q->Sled){
    Vp=q->V; d=Func(t);
-//   if(ALL_ANGLES||Mangles&&FindMagazine(Mangles,Vp->Name,&M))
-//    d=NormAngle(d);
    fwprintf(Fo,L"%s=%12.8f; ",Vp->Name,d);
   }
   fputwc('\n',Fo);
@@ -3912,10 +3798,7 @@ void SaveOK(void){
 //---------------------------------------------------------------------------
 void __fastcall TFormKinema::TabControlChange(TObject *Sender){
  int Ind=-1; wchar_t *s2,*s3; TRect R=Canvas->ClipRect;
- if(TabControl->TabIndex==-1){
-//  MReportClick(NULL);
-  return;
- }
+ if(TabControl->TabIndex==-1) return;
  ToolButtonToBMP->Enabled=true; ToolButtonTable->Enabled=true;
  ToolButtonPrint->Enabled=true; ToolButtonInclude->Enabled=false;
  Timer3D->Enabled=false; if(Tabl){ free(Tabl); Tabl=NULL; }
@@ -3997,7 +3880,7 @@ M:ToolButtonToBMP->Enabled=false; ToolButtonTable->Enabled=false;
     if(IsSyntError){//синт.ошибки->показываем исходник
      if(!RichEditInp->Text.IsEmpty()){
       ToolButtonPrint->Enabled=true;
-      if(HTMLREPORT){
+	  if(HTMLREPORT){
        CppWebBrowser->Align=alNone;
        CppWebBrowser->Height=0; CppWebBrowser->Width=0;
       }
@@ -4112,7 +3995,8 @@ void __fastcall TFormKinema::ToolButtonHelpClick(TObject *Sender){
   Application->MessageBox(Inf,L"Системная ошибка!",MB_OK);
   return;
  }
- Application->CreateForm(__classid(TFormOtchet),&FormOtchet);
+ if(!FormOtchet)
+  Application->CreateForm(__classid(TFormOtchet),&FormOtchet);
  FormOtchet->cbURL->Text=Help;
  FormOtchet->ShowModal();
 }
@@ -4256,7 +4140,7 @@ void __fastcall TFormKinema::TimerGamesTimer(TObject *Sender){
       swprintf(BMPKadrs,L"%s\\%s(?%d)\\%3.3d.bmp",CurrDir,BMPKadr,Kinst,Nkadr);
      else
       swprintf(BMPKadrs,L"%s\\%s\\%3.3d.bmp",CurrDir,BMPKadr,Nkadr);
-     Image->Picture->SaveToFile(BMPKadrs);
+	 Image->Picture->SaveToFile(BMPKadrs);
     }
     if(TOJPEG){
      if(JPEG) delete JPEG; JPEG = new TJPEGImage();
@@ -4360,7 +4244,7 @@ void __fastcall TFormKinema::ToolButtonGameClick(TObject *Sender){
     }}
     if(TOBMP&&!_waccess(Dir,0)){
      swprintf(BMPKadrs,L"%s\\%3.3d.bmp",Dir,Nkadr);
-     Image->Picture->SaveToFile(BMPKadrs);
+	 Image->Picture->SaveToFile(BMPKadrs);
     }
     if(TOJPEG&&!_waccess(Dir,0)){
      swprintf(JPGKadrs,L"%s\\%3.3d.jpg",Dir,Nkadr);
@@ -4492,7 +4376,8 @@ void __fastcall TFormKinema::ButtonCancelClick(TObject *Sender){
 }
 //---------------------------------------------------------------------------
 void __fastcall TFormKinema::OtchetClick(TObject *Sender){
- Application->CreateForm(__classid(TFormOtchet),&FormOtchet);
+ if(!FormOtchet)
+  Application->CreateForm(__classid(TFormOtchet),&FormOtchet);
  FormOtchet->cbURL->Text=HtmFile;
  FormOtchet->ShowModal();
 }
@@ -4505,18 +4390,13 @@ void __fastcall TFormKinema::ToolButtonIncludeClick(TObject *Sender){
  wcscpy(Name,TabControl->Tabs->Strings[TabControl->TabIndex].c_str());
  if(Gamer) ToolButtonGameClick(Sender);
  if(Reader) ToolButtonReadClick(Sender);
-// if(HTMFILE=_wfopen(HtmFile,L"r+")){
  if(SLH){ int K_t=Kt;
-//  if(!fseek(HTMFILE,-Lpodv,2)){
   double MSt0=MSt[0],MSt1=MSt[1],X_k=Xk,Y_k=Yk,x_k=xk,y_k=yk[0],W_g=Wg,H_g=Hg;
   for(int i=0;i<Kpodv;i++) SLH->Delete(SLH->Count-1);
   if(!NamesInclude&&!NamesTAB)
    swprintf(Shtm,L"<h4 align=\"left\"><font color=\"#009900\">"
 	L"3. Избранные графики и таблицы:</font></h4>");
    SLH->Add(Shtm); *Shtm='\0'; shtm=Shtm;
-//   fwprintf(HTMFILE,
-//	L"<h4 align=\"left\"><font color=\"#009900\">"
-//	L"3. Избранные графики и таблицы:</font></h4>\n");
   TakeMagazine(&NamesInclude,Name);
   ToolButtonToBMPClick(NULL);
   swprintf(Shtm,L"<p align=\"left\"><img src=\"%s\"",BMPFile);
@@ -4527,20 +4407,10 @@ void __fastcall TFormKinema::ToolButtonIncludeClick(TObject *Sender){
   SLH->Add(Shtm);
   swprintf(Shtm,L"</p><br>");
   SLH->Add(Shtm); *Shtm='\0'; shtm=Shtm;
-//  fwprintf(HTMFILE,
-//   L"<p align=\"left\">"
-//   L"<img src=\"%s\" alt=\"Этот график см. в файле\n%s или\n%s\">"
-//   L"</p><br>\n",BMPFile,BMPFile,JPGFile);
   for(int i=0;i<Kpodv;i++) SLH->Add(SLP->Strings[i]);
-//  fwprintf(HTMFILE,
-//   L"<hr><font face=\"Georgia, Times New Roman, Times, serif\""
-//   L" color=\"#326464\">&copy; %s, %d<br></font><br>\n",Autor,NYear+1900)+1;
-//  fwprintf(HTMFILE,L"</body>\n</html>\n");
   MSt[0]=MSt0; MSt[1]=MSt1;
   Xk=X_k; Yk=Y_k; xk=x_k; yk[0]=y_k; Wg=W_g; Hg=H_g; Kt=K_t;
-//  }
   SLH->SaveToFile(HtmFile);
-//  fclose(HTMFILE);
   CppWebBrowser->Navigate(HtmFile);
  }
  ToolButtonInclude->Enabled=false;
@@ -4575,26 +4445,11 @@ void __fastcall TFormKinema::MReportClick(TObject *Sender){
  TabControl->TabIndex=-1; ToolButtonGame->Enabled=false;
  if(HTMLREPORT){
   if(!_waccess(HtmFile,0)){//делаем HTML-отчет
-   Application->CreateForm(__classid(TFormOtchet),&FormOtchet);
-   FormOtchet->cbURL->Text=HtmFile;
-   FormOtchet->Left=0;
-   FormOtchet->Width=Width;
-   FormOtchet->Top=Top+24;
-   FormOtchet->Height=Height-24;
-   FormOtchet->ShowModal();
-/*   if(ScrollBox) ScrollBox->Visible=false;
+   if(ScrollBox) ScrollBox->Visible=false;
    if(DataKDMPaintBox) DataKDMPaintBox->Visible=false;
-   if(!_waccess(HtmFile,0))
-	CppWebBrowser->Navigate(HtmFile);
-//   CppWebBrowser->Align=alClient;
+   CppWebBrowser->Navigate(HtmFile);
    CppWebBrowser->Visible=true;
-   CppWebBrowser->Align=alNone;
-   CppWebBrowser->Left=0;  CppWebBrowser->Width=200;
-   CppWebBrowser->Top=0;   CppWebBrowser->Height=200;
-   RichEditInp->Visible=false;
-   PhonImage->Visible=false;
-   ImageGraph->Visible=false;
-*/
+   CppWebBrowser->Align=alClient;
  }}
  else{//делаем графическое окно
   CppWebBrowser->Visible=false;
@@ -4611,8 +4466,8 @@ void __fastcall TFormKinema::MReportClick(TObject *Sender){
    H+=2*hm;
    if(ImageKDM->FindLastInst(L"РАБОТА")) H+=2*hm;
    if(ImageKDM->FindLastInst(L"ВЫПОЛНИЛ")||
-      ImageKDM->FindLastInst(L"ВЫПОЛНИЛА")||
-      ImageKDM->FindLastInst(L"ВЫПОЛНИЛИ")) H+=2*hm;
+	  ImageKDM->FindLastInst(L"ВЫПОЛНИЛА")||
+	  ImageKDM->FindLastInst(L"ВЫПОЛНИЛИ")) H+=2*hm;
    if(FindInstLast(L"РИСУНОК")) H+=0.5*ClientHeight;
    ScrollBox->Align=alNone;
    ScrollBox->Width=W+4;
@@ -4635,21 +4490,12 @@ void __fastcall TFormKinema::MReportClick(TObject *Sender){
 void __fastcall TFormKinema::MDiagnosClick(TObject *Sender){
  TabControl->TabIndex=-1; ToolButtonGame->Enabled=false;
  if(RichEditInp->Visible) RichEditInp->Visible=false;
- if(!_waccess(DgsFile,0)){//открываем отчет диагностики
-  Application->CreateForm(__classid(TFormOtchet),&FormOtchet);
-  FormOtchet->cbURL->Text=DgsFile;
-  FormOtchet->Left=Left;
-  FormOtchet->Width=Width;
-  FormOtchet->Top=Top+24;
-  FormOtchet->Height=Height-24;
-  FormOtchet->ShowModal();
+ if(!HTMLREPORT){
+  ScrollBox->Visible=false;
+  DataKDMPaintBox->Visible=false;
  }
-// if(!HTMLREPORT){
-//  ScrollBox->Visible=false;
-//  DataKDMPaintBox->Visible=false;
-// }
-// CppWebBrowser->Navigate(DgsFile);
-// CppWebBrowser->Align=alClient; CppWebBrowser->SetFocus();
+ CppWebBrowser->Navigate(DgsFile);
+ CppWebBrowser->Align=alClient; CppWebBrowser->SetFocus();
 }
 //---------------------------------------------------------------------------
 void __fastcall TFormKinema::mWidthPenClick(TObject *Sender){
@@ -4833,23 +4679,13 @@ void __fastcall TFormKinema::MOperatorsClick(TObject *Sender){
  TabControl->TabIndex=-1; ToolButtonGame->Enabled=false;
  if(RichEditInp->Visible) RichEditInp->Visible=false;
  if(!_waccess(OprFile,0)){//открываем отчет операторов
-  Application->CreateForm(__classid(TFormOtchet),&FormOtchet);
-  FormOtchet->cbURL->Text=OprFile;
-  FormOtchet->Left=Left;
-  FormOtchet->Width=Width;
-  FormOtchet->Top=Top+24;
-  FormOtchet->Height=Height-24;
-  FormOtchet->ShowModal();
- }
-// CppWebBrowser->Align=alNone;
-// CppWebBrowser->Height=0; CppWebBrowser->Width=0;
-// if(!HTMLREPORT){
-//  ScrollBox->Visible=false;
-//  DataKDMPaintBox->Visible=false;
-// }
-// CppWebBrowser->Navigate(OprFile);
-// CppWebBrowser->Align=alClient; CppWebBrowser->SetFocus();
-}
+  if(!HTMLREPORT){
+   ScrollBox->Visible=false;
+   DataKDMPaintBox->Visible=false;
+  }
+  CppWebBrowser->Navigate(OprFile);
+  CppWebBrowser->Align=alClient; CppWebBrowser->SetFocus();
+}}
 //---------------------------------------------------------------------------
 void __fastcall TFormKinema::ButtonEpsOKClick(TObject *Sender){
  double E; wchar_t FileRez[256],*s,S[256];
@@ -5405,9 +5241,6 @@ void MagazinToFile(Magazine *M,wchar_t *File,bool Add){
   fclose(F);
 }}
 //---------------------------------------------------------------------------
-//КООРДИНАТЫ ТОЧЕК:=XC0,YC0,ZC0,XR6,YR6,ZR6,XL6,YL6,ZL6;
-//РАЗМЕРЫ ЗВЕНЬЕВ:=A,G,B,C,D,D1,F,H,K,E,Sx,Sz;
-//по новому
 void CreateProcInv(){
 //составим список имен переменных, входящих в уравнения
  Cord *Cv=NULL,*Ce=NULL,*q; FILE *Fo,*Fi; int i; Root *I; Vary *V;
@@ -5524,17 +5357,6 @@ void CreateProcInv(){
   fclose(Fi); fclose(Fo);
 }}
 //---------------------------------------------------------------------------
-//КООРДИНАТЫ ЦЕНТРА МАСС:=XC,YC,ZC;
-//КООРДИНАТЫ ТОЧЕК:=XR6,YR6,ZR6,XL6,YL6,ZL6;
-//РАЗМЕРЫ ЗВЕНЬЕВ НИЗА:=A,G,B,C,D,D1,F,H,K,E,Sx,Sz;
-//РАЗМЕРЫ ЗВЕНЬЕВ ВЕРХА:=L,L1,M,Nz1,Nz2,Nz3,Nz4,Nz5,Nz,Nx1,
-//                       U,Q,Q1,Q2,Q3,P,P1,R,S,T;
-//КООРДИНАТЫ ЦЕНТРОВ МАСС НИЗА:=Ax,Az,Gx,Gy,Gz,By,Bz,Cz,Dx,Dz,Sx,Sz;
-//КООРДИНАТЫ ЦЕНТРОВ МАСС ВЕРХА:=Krx,Krz,Hrx,Hry,Hrz,Shx,Shy,Shz,
-//                               Lpx,Lpy,Lpz,Pry,Prz,Efy,Ply,Plz,Lky,Lkz;
-//УГЛЫ ВЕРХА:=omega,tau,ro,hi,lambda$L,mu$L,jota$L,kappa$L,
-// lambda$R,mu$R,jota$R,kappa$R;
-//МАССЫ:=mt,me,mb,mg,mp,ms,mkr,mhr,msh,mlp,mpl,mef,mpp,mlk;
 void CreateProcInvCOM(){
 //составим список имен переменных, входящих в уравнения
  Cord *CvUr=NULL,*CvUq=NULL,*Ce=NULL,*q,*CuUr=NULL,*CuUq=NULL;
@@ -5565,11 +5387,6 @@ void CreateProcInvCOM(){
  if(I=FindInstLast(L"МАССЫ"))
   for(Parm *P=I->First;P;P=P->Sled)
    if(P->Nam&&FindVary(P->Nam,&V)) TakeCordDefVars(&Ce,V);
-// for(int i=0;i<N;i++){
-//  UnOpToVary(Uravn[i],&CuUr);
-//  for(int j=0;j<N;j++)
-//   UnOpToVary(Af[i][j],&CuUq);
-// }
  for(int i=0;i<N;i++){
 //отсортируем имена переменных из уравнений по зависимости их друг от друга
   VarsFromFormDefVars(Uravn[i],&CvUr,Ce);
@@ -5622,7 +5439,7 @@ void CreateProcInvCOM(){
       if(i>9){ i=0; fputws(L"\n//",Fo); }
      }
      else fputwc('}',Fo);
-    }
+	}
    }
    fputws(L" - размеры звеньев\n",Fo);
   }
@@ -5648,7 +5465,7 @@ void CreateProcInvCOM(){
     if(i>9){ i=0; fputws(L"\n//",Fo); }
    }
    if(I=FindInstLast(L"КООРДИНАТЫ ЦЕНТРОВ МАСС ВЕРХА")){
-    P=I->First;
+	P=I->First;
     for(;P;P=P->Sled,i++){
      if(P->Nam) fwprintf(Fo,L"%s",P->Nam);
      if(P->Sled) fputws(L", ",Fo);
@@ -5674,7 +5491,7 @@ void CreateProcInvCOM(){
    fwprintf(Fo,L"//Ms={");
    for(i=1;P;P=P->Sled,i++){
     if(P->Nam) fwprintf(Fo,L"%s",P->Nam);
-    if(P->Sled){
+	if(P->Sled){
      fputws(L", ",Fo);
      if(i>9){ i=0; fputws(L"\n//",Fo); }
    }}
@@ -5700,7 +5517,7 @@ void CreateProcInvCOM(){
   }
   if(I=FindInstLast(L"КООРДИНАТЫ ТОЧЕК")){
    for(Parm *P=I->First;P;P=P->Sled)
-    if(P->Nam&&FindVary(P->Nam,&V))
+	if(P->Nam&&FindVary(P->Nam,&V))
      fwprintf(Fo,L"%s, ",P->Nam);
   }
   fputws(L"\n    ",Fo);
@@ -5778,7 +5595,7 @@ void CreateProcInvCOM(){
    if(I=FindInstLast(L"КООРДИНАТЫ ЦЕНТРОВ МАСС НИЗА")){
     fputws(L"\n//Присвоение значений координатам центров масс низа\n",Fo); i=0;
     for(Parm *P=I->First;P;P=P->Sled){
-     fwprintf(Fo,L" %s=Cm[%d];",P->Nam,i); i++; if(!(i%7)) fputwc('\n',Fo);
+	 fwprintf(Fo,L" %s=Cm[%d];",P->Nam,i); i++; if(!(i%7)) fputwc('\n',Fo);
    }}
    if(I=FindInstLast(L"КООРДИНАТЫ ЦЕНТРОВ МАСС ВЕРХА")){
     fputws(L"\n//Присвоение значений координатам центров масс верха\n",Fo);
@@ -5956,10 +5773,8 @@ void CreateProcInvCOM(){
    CopyZam(Fo,Inf);
   fclose(Fi); fclose(Fo);
  }
- DelAllList((void **)&CvUr);
- DelAllList((void **)&CuUr);
- DelAllList((void **)&CvUq);
- DelAllList((void **)&CuUq);
+ DelAllList((void **)&CvUr); DelAllList((void **)&CuUr);
+ DelAllList((void **)&CvUq); DelAllList((void **)&CuUq);
  DelAllList((void **)&Ce);
 }
 //---------------------------------------------------------------------------
@@ -6037,7 +5852,7 @@ void CreateProcInvCOMVel(){
   fputws(L"\n    ",Fo);
   if(I=FindInstLast(L"КООРДИНАТЫ ЦЕНТРОВ МАСС ВЕРХА")){ Parm *P=I->First;
    for(int i=0;P;P=P->Sled){
-    if(P->Nam&&FindVary(P->Nam,&V)){
+	if(P->Nam&&FindVary(P->Nam,&V)){
      fwprintf(Fo,L"%s, ",P->Nam); i++; if(!(i%10)) fputws(L"\n    ",Fo);
   }}}
   fputws(L"\n    ",Fo);
@@ -6117,12 +5932,10 @@ void CreateProcInvCOMVel(){
   if(FindInstLast(L"УГЛЫ ВЕРХА")){
    fputws(L"//uv={",Fo);
    for(Parm *P=I->First;P;P=P->Sled){ int i=0;
-    if(P->Nam&&FindVary(P->Nam,&V)){
-     if(i>6){ fputwc('\n',Fo); i=0; } else i++;
-     fputws(P->Nam,Fo);
-     if(P->Sled) fputwc(',',Fo); else fputws(L"} - углы верха\n",Fo);
-//  fputws(L"//uv={omega,tau,ro,hi,psi,lambda$L,mu$L,jota$L,kappa$L,\n"
-//        L"//    lambda$R,mu$R,jota$R,kappa$R} - углы верха\n",Fo);
+	if(P->Nam&&FindVary(P->Nam,&V)){
+	 if(i>6){ fputwc('\n',Fo); i=0; } else i++;
+	 fputws(P->Nam,Fo);
+	 if(P->Sled) fputwc(',',Fo); else fputws(L"} - углы верха\n",Fo);
   }}}
   fputws(L"//rC={XC,YC,ZC}, r6R={X6R,Y6R,Z6R}, r6L={X6L,Y6L,Z6L}\n",Fo);
   if(I=FindInstLast(L"РАЗМЕРЫ ЗВЕНЬЕВ НИЗА")){ Parm *P=I->First;
@@ -6149,7 +5962,7 @@ void CreateProcInvCOMVel(){
   }}
   if(I=FindInstLast(L"РАЗМЕРЫ ЗВЕНЬЕВ ВЕРХА")){ Parm *P=I->First;
    for(;P;P=P->Sled,i++){
-    fwprintf(Fo,L"%0.9f",P->Nam&&FindVary(P->Nam,&V)?Val(V->Znach):0);
+	fwprintf(Fo,L"%0.9f",P->Nam&&FindVary(P->Nam,&V)?Val(V->Znach):0);
     if(P->Sled) fputws(L", ",Fo);
     if(i>4){ i=0; fputws(L"\n    ",Fo); }
   }}
@@ -6289,23 +6102,22 @@ void CreateProcDir(){
 //составим список имен переменных, входящих в переменные,
 //перечисленные в инструкции ВКЛЮЧИТЬ В ПРОЦЕДУРУ и отсортируем их
 //по зависимости их друг от друга
-
  if(I=FindInstLast(L"ВКЛЮЧИТЬ В ПРОЦЕДУРУ")){
   for(Parm *P=I->First;P;P=P->Sled){
    if(P->Nam&&FindVary(P->Nam,&V)){
-    F.V=V;
-    VarsFromFormDefVars(F,&Cv,NULL);
+	F.V=V;
+	VarsFromFormDefVars(F,&Cv,NULL);
   }}
   if(Fo=_wfopen(L"tmp.cpp",L"w")){ Cord *q;
    fputws(L"void GaitKoords(long double t,long double *r0,L"
-    L"long double *r6R,long double *r6L){\n",Fo);
+	L"long double *r6R,long double *r6L){\n",Fo);
    fwprintf(Fo,L" long double ");
    for(q=Cv;q->Sled;q=q->Sled) fwprintf(Fo,L"%s, ",q->V->Name);
    fwprintf(Fo,L"%s;\n",q->V->Name);
    fputws(L"//Переменные",Fo);
    for(q=Cv;q;q=q->Sled){
-    fputws(L"\n ",Fo);
-    PrintForm(true,Fo,q->V->Name,q->V->Znach);
+	fputws(L"\n ",Fo);
+	PrintForm(true,Fo,q->V->Name,q->V->Znach);
    }
    fputws(L"\n",Fo);
    fputws(L"//Сохранение значений координат\n",Fo);
@@ -6330,37 +6142,18 @@ void __fastcall TFormKinema::mToProcClick(TObject *Sender){
   if(!LAGRANGE){
    if(FindInstLast(L"КООРДИНАТЫ ЦЕНТРА МАСС")){
     if(VELOKIN==1)
-     CreateProcInvCOMVel();
-    if(VELOKIN==2)
-     CreateProcInvCOMVel2();
-    else
-     CreateProcInvCOM();
+	 CreateProcInvCOMVel();
+	if(VELOKIN==2)
+	 CreateProcInvCOMVel2();
+	else
+	 CreateProcInvCOM();
    }
    else
-    CreateProcInv();
+	CreateProcInv();
  }}
  else CreateProcDir();
  Application->MessageBoxA(L"Задание успешно завершено!",L"ToProc",MB_OK);
  CPP=false;
-}
-//---------------------------------------------------------------------------
-void __fastcall TFormKinema::FormShow(TObject *Sender){
- MReportClick(NULL);
-}
-//---------------------------------------------------------------------------
-void __fastcall TFormKinema::mToProcKoordPointClick(TObject *Sender){
-// if(CreateProcCalcKontrPoint())
-//  mToProcKoordPoint->ImageIndex=44;
-}
-//---------------------------------------------------------------------------
-void __fastcall TFormKinema::mCreateProcIdentSizesClick(TObject *Sender){
-// if(CreateProcIdentSizes())
-//  mCreateProcIdentSizes->ImageIndex=44;
-}
-//---------------------------------------------------------------------------
-void __fastcall TFormKinema::mCreateProcIdentNewtonsClick(TObject *Sender){
-// if(CreateProcIdentNewtons())
-//  mCreateProcIdentNewtons->ImageIndex=44;
 }
 //---------------------------------------------------------------------------
 

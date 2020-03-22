@@ -69,7 +69,6 @@ __published:	// IDE-managed Components
   TMenuItem *pmAbout;
   TMenuItem *pmExit;
   TTimer *Timer3D;
-  TCppWebBrowser *CppWebBrowser;
   TMenuItem *MReport;
   TMenuItem *MDiagnos;
   TPanel *Panel;
@@ -124,10 +123,12 @@ __published:	// IDE-managed Components
   TMenuItem *mToProc;
   TTabControl *TabControl;
   TRichEdit *RichEditInp;
-        TMenuItem *mToProcKoordPoint;
-        TMenuItem *mCreateProcIdentSizes;
-        TMenuItem *mCreateProcIdentNewtons;
-  void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+  TMenuItem *mToProcKoordPoint;
+  TMenuItem *mCreateProcIdentSizes;
+  TMenuItem *mCreateProcIdentNewtons;
+  TCppWebBrowser *CppWebBrowser;
+  void __fastcall FormClose(TObject *Sender,
+							TCloseAction &Action);
   void __fastcall mColorsClick(TObject *Sender);
   void __fastcall mCountTablClick(TObject *Sender);
   void __fastcall ButtonOKCountTabClick(TObject *Sender);
@@ -139,11 +140,14 @@ __published:	// IDE-managed Components
   void __fastcall ToolButtonToBMPClick(TObject *Sender);
   void __fastcall ToolButtonExitClick(TObject *Sender);
   void __fastcall ToolButtonHelpClick(TObject *Sender);
-  void __fastcall FormKeyUp(TObject *Sender, WORD &Key,TShiftState Shift);
+  void __fastcall FormKeyUp(TObject *Sender, WORD &Key,
+							TShiftState Shift);
   void __fastcall ToolButtonAboutClick(TObject *Sender);
   void __fastcall EditCountTabExit(TObject *Sender);
-  void __fastcall EditCountTabKeyDown(TObject *Sender,WORD &Key,TShiftState Shift);
-  void __fastcall EditCountTabKeyPress(TObject *Sender, wchar_t &Key);
+  void __fastcall EditCountTabKeyDown(TObject *Sender,WORD &Key,
+									  TShiftState Shift);
+  void __fastcall EditCountTabKeyPress(TObject *Sender,
+									   wchar_t &Key);
   void __fastcall FormPaint(TObject *Sender);
   void __fastcall ToolButtonGameClick(TObject *Sender);
   void __fastcall ToolButtonCalculatorClick(TObject *Sender);
@@ -152,7 +156,8 @@ __published:	// IDE-managed Components
   void __fastcall ButtonCancelClick(TObject *Sender);
   void __fastcall OtchetClick(TObject *Sender);
   void __fastcall ToolButtonIncludeClick(TObject *Sender);
-  void __fastcall UpDownKTimeClick(TObject *Sender,TUDBtnType Button);
+  void __fastcall UpDownKTimeClick(TObject *Sender,
+								   TUDBtnType Button);
   void __fastcall PopupMenuPopup(TObject *Sender);
   void __fastcall FormCreate(TObject *Sender);
   void __fastcall Timer3DTimer(TObject *Sender);
@@ -185,9 +190,10 @@ __published:	// IDE-managed Components
   void __fastcall mPrintHeadClick(TObject *Sender);
   void __fastcall MouseDown(TObject *Sender,
    TMouseButton Button, TShiftState Shift, int X, int Y);
-  void __fastcall MouseMove(TObject *Sender,TShiftState Shift, int X, int Y);
+  void __fastcall MouseMove(TObject *Sender,TShiftState Shift,
+							int X, int Y);
   void __fastcall MouseUp(TObject *Sender,TMouseButton Button,
-   TShiftState Shift,int X,int Y);
+						  TShiftState Shift,int X,int Y);
   void __fastcall TimerAreaTimer(TObject *Sender);
   void __fastcall mKColumnClick(TObject *Sender);
   bool __fastcall ReadRezFile(wchar_t *File);
@@ -197,10 +203,6 @@ __published:	// IDE-managed Components
    TMouseButton Button, TShiftState Shift, int X, int Y);
   void __fastcall mRenovCalcClick(TObject *Sender);
   void __fastcall mToProcClick(TObject *Sender);
-  void __fastcall FormShow(TObject *Sender);
-		void __fastcall mToProcKoordPointClick(TObject *Sender);
-		void __fastcall mCreateProcIdentSizesClick(TObject *Sender);
-		void __fastcall mCreateProcIdentNewtonsClick(TObject *Sender);
 private:	// User declarations
  TImageKDM *ImageKDM;
  TPaintBox *DataKDMPaintBox; TScrollBox *ScrollBox; int H,W;
@@ -208,12 +210,12 @@ private:	// User declarations
  double xdt,ydt,zdt,tt,dtt;//координаты и время для проигрыша
  bool ChangeOpt,Gamer,Reader,ColorPrint,ColorBMP,Perspect;
  String NameFontEd,NameFont,Razm[2];
- int SizeFontEd,ExFontEd,ItFontEd,UnFontEd,SizeFont,ExFont,ItFont,UnFont,
-  N,KG,NORM,
+ int SizeFontEd,ExFontEd,ItFontEd,UnFontEd,SizeFont,ExFont,
+  ItFont,UnFont,N,KG,NORM,
   Lo[2], //длина оси
-  KS[2],KSx,KSy,Kt,// число пикселей по X и Y в кадре, годографе
+  KS[2],KSx,KSy,Kt,//число пикселей по X и Y в кадре,годографе
   Xk,Yk, //к-ты левого нижнего угла рамки графика в пикселах
-  MaxOs[2],n, //максимальные числа пикселей по горизонтали и вертикали экрана
+  MaxOs[2],n,//макс.числа пикселей по горизонтали и верт. экрана
   PoleLeft,PoleRight,PoleTop,PoleBottom,//поля устройства
   Ht,Hh,Hy,h,//высота таблицы, названия, названия оси Y,строки,
   Hg,Hc,Hx,//высота графика, чисел по оси X, названия оси X,
@@ -228,14 +230,14 @@ private:	// User declarations
  TPrinter *Prntr;
 public:		// User declarations
  String Head,Name,NameZ,NameY,NameX,RazmX,RazmY;
- TColor ColorHead,ColorNameOs,ColorTabl,ColorGrid,ColorCifrGrid,
-  ColorRamka,ColorGraph,ColorPhonEd,ColorFontEd,ColorPhon,ColorFont,
-  ColorGraph2,ColorGraph3,ColorGraph4,ColorGraph5;
+ TColor ColorHead,ColorNameOs,ColorTabl,ColorGrid,
+  ColorCifrGrid,ColorRamka,ColorGraph,ColorPhonEd,
+  ColorFontEd,ColorPhon,ColorFont,ColorGraph2,ColorGraph3,
+  ColorGraph4,ColorGraph5;
  bool flag;
- int x_start, x_end, y_start, y_end,  checkX, checkY;
  double teta, fi;
- int CountTabl;
-   double Eps1,Eps2,p0,p1,p2,p3,XC,YC,ZC,xA,xB,yA,yB,XA,YA,XB,YB;
+ int CountTabl,x_start, x_end, y_start, y_end,  checkX, checkY;
+ double Eps1,Eps2,p0,p1,p2,p3,XC,YC,ZC,xA,xB,yA,yB,XA,YA,XB,YB;
 		__fastcall TFormKinema(TComponent* Owner);
    bool __fastcall Kinemat (void);
    void __fastcall OptToFile();
@@ -258,11 +260,13 @@ public:		// User declarations
    void __fastcall Godograph3D(TCanvas *Canvas);
    void __fastcall PrepDraw3D(TCanvas *Canvas);
    void __fastcall DrawCurve3D(TCanvas *Canvas,TColor Color);
- double __fastcall ToScreen(double x,double y,double z,int &xe,int &ye);
+ double __fastcall ToScreen(double x,double y,double z,
+							int &xe,int &ye);
    void __fastcall DrawBar3D(TCanvas *Canvas,bool Color);
    void __fastcall DrawArea(TCanvas *Canvas,bool Color);
    void __fastcall DrawVectors(TCanvas *Canvas,bool Color);
-   void __fastcall FuncXYZ(double t,double &x,double &y,double &z);
+   void __fastcall FuncXYZ(double t,double &x,double &y,
+						   double &z);
  double __fastcall FuncXYZ(double x,double y);
    void __fastcall SravnFunc(TCanvas *Canvas,Magazine *Names);
    void __fastcall FindPoint(int x,int y,int &i,int &j);

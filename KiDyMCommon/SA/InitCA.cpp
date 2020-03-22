@@ -54,7 +54,7 @@ void BaseUnit(wchar_t *Units){ wchar_t *s,*s0;
   TakeMagazine(&MUnit,s);
   *s0=' '; s=s0+1;
  }}
-// TakeMagazine(&MUnit,s);
+ TakeMagazine(&MUnit,s);
 }
 //------------------------------------------------------------------------
 void InitCA(void){ //Vary *V;
