@@ -71,6 +71,7 @@ Thumbs.db
 
 __history/
 Debug/
+__recovery/
 
 #Exclude log file
 
