@@ -2344,11 +2344,11 @@ double ValKRazm(Form F){   //Расчет переводного коэффициента размерности
    u=ValKRazm(F.B->L);
    v=ValKRazm(F.B->R);
    switch(F.B->Oper){
-    case  3: D = u * v; break;
-    case  4: D = u/v; break;
-    case  6:
-     D=pow(u,F.B->R.C->Val);
-     break;
+	case  3: D = u * v; break;
+	case  4: D = u/v; break;
+	case  6:
+	 D=pow(u,F.B->R.C->Val);
+	 break;
  }}
  return D;
 }

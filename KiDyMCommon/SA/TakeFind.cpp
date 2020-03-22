@@ -323,9 +323,11 @@ Vary *TakeVary(wchar_t *S){ Vary *V;
  if(FindVary(S,&V)) return V;
  Vary *W=(Vary *)calloc(1,sizeof(Vary));
  if(!W){ IsError=true; return NULL; }
- W->Name=(wchar_t *)malloc(SzC*(wcslen(S)+1)); W->Razm.C=Pust;
+ W->Name=(wchar_t *)malloc(SzC*(wcslen(S)+1));
+ W->Razm.C=Pust;  W->Krazm=1.0;
  if(!(W->Name)){ IsError=true; return NULL; }
  wcscpy(W->Name,S); W->Atr=VARY; W->P=W->Q=1; W->U=0; W->Znach.C=Pust;
+
  return (V?V->Sled:L->V)=W;
 }
 //---------------------------------------------------------------------------
@@ -541,15 +543,14 @@ List *TakeList(wchar_t *S){
  l->Name=(wchar_t *)malloc(SzC*(wcslen(S)+1));
  if(!(l->Name)){ IsError=true; return NULL; }
  (L?L->Sled:LBeg)=l; L=LBeg;
- wcscpy(l->Name,S); l->U=NULL;
+ wcscpy(l->Name,S);
  if(!wcscmp(S,L"ÎÑÍÎÂÍÎÉ")){
   l->Time=TakeVary(L"t"); l->Freq=TakeVary(L"w");
   l->V=TakeVary(L"g"); l->V->P=0; l->V->Val=9.8062;
   l->V->Znach.C=TakeCnst(9.8062);
  }
  else{
-  l->V=NULL;
-  if(!wcscmp(S,L"ÐÀÇÌÅÐÍÎÑÒÈ")){
+  if(!wcscmp(S,L"ÐÀÇÌÅÐÍÎÑÒÈ")){ double D=M_PI/180.0;
    Vary *rad,*degree,*c,*min,*hour,*day,*mounth,*year,
 	*m,*cm,*km,*mm,*mile,*dm,*duim,
 	*kg,*gram,*ton,
@@ -577,7 +578,7 @@ List *TakeList(wchar_t *S){
    ton->Znach=1000*Fkg; gram->Znach=0.001*Fkg;
    km->Znach=1000*Fm; mm->Znach=0.001*Fm; mile->Znach=1852*Fm;
    duim->Znach=0.0254*Fm; cm->Znach=0.01*Fm; dm->Znach=0.1*Fm;
-   dj->Znach=FDj; n->Znach=FN; degree->Znach=60*Frad;
+   dj->Znach=FDj; n->Znach=FN; degree->Znach=D*Frad;
    if(FindList(L"ÎÑÍÎÂÍÎÉ",&L)){
 	L->V->Razm=Fm/Fc2;
 	L->Time->Razm=Fc;
