@@ -20,10 +20,10 @@ extern wchar_t *NameFunc[],Inf[],ErrFile[],InpFile[],HtmFile[],
  ANSIFile[],Stmp[],*stmp,Serr[],*serr,Shtm[],*shtm;
 extern TStringList *SLT,*SLE,*SLH,*SLK; extern String SF;
 extern Cnst *Pust,*Nul,*Odin,*Dva,*Tri; extern List *L,*LBeg;
-extern long DateInp;
+extern long DateInp; extern Magazine *MUnit;
 
 		   /*  ќбъ€влени€ объектов:  */
-long Lfile,PozFile; Magazine *Mtp,*MUnit;
+long Lfile,PozFile; Magazine *Mtp;
 int PUNKT=0,StrLong,NStrCalc;
 bool RRR,SMALLFONT,BodysIsTreated,LOGIC; TColor ColorModel=(TColor)255,ISRAZM;
 TImage *ImageVvod,**Images;
@@ -1982,6 +1982,20 @@ void SetRazm(void){
   DelAllList((void **)&Rz);
 }}
 //---------------------------------------------------------------------------
+void MessUnits(wchar_t *Head){ IsSyntError=true;
+ swprintf(Inf,L"Ёлементом списка инструкции \"%s\"\n"
+  L"должен быть тип размерности:\n"
+  L" \'m\', \'l\', \'t\' или \'a\'\n"
+  L"соответственно масса, длина, врем€ или угол\n"
+  L"и в скобках после него - предпочтительна€ в этом\n"
+  L"файле пользовательска€ размерность из доступных:\n"
+  L"\"г\", \"кг\", \"т\",\n"
+  L"\"мм\", \"см\", \"м\", \"км\", \"мил€\", \"дм\", \"дюйм\",\n"
+  L"\"с\", \"мин\", \"час\", \"день\", \"мес€ц\", \"год\",\n"
+  L"\"рад\", \"∞\"");
+ Application->MessageBoxA(Inf,L" ќЎ»Ѕ ј ",MB_OK|MB_ICONERROR);
+}
+//---------------------------------------------------------------------------
 bool VvodJob(TStringList *SLM,TRichEdit *Ri,TCGauge *CGauge,
   TStatusBar *StatusBar,TImageKDM *ImageKDM,
   TTabControl *TabControl,TCanvas *Canvas){
@@ -2113,28 +2127,71 @@ MB_ICONWARNING);
    CodElem(I->First->Nam);
  }
  if((I=FindInstLast(L"≈ƒ»Ќ»÷џ »«ћ≈–≈Ќ»я"))||
-	(I=FindInstLast(L"–ј«ћ≈–Ќќ—“»"))){
-  if(MUnit) MUnit=(Magazine *)realloc(MUnit,3*sizeof(Magazine));
-  else MUnit=(Magazine *)calloc(3,sizeof(Magazine));
-  MUnit->Sled=MUnit+1; MUnit->Sled->Sled=MUnit+2;
-  for(Parm *P=I->First;P;P=P->Sled){
-   wchar_t *S=(wchar_t *)calloc(wcslen(P->R->Nam)+1,SzC);
-   switch(P->Nam[0]){
-	case 'm':
-	 MUnit[0].S=wcscpy(S,P->R->Nam);
-	 break;
-	case 'l':
-	 MUnit[1].S=wcscpy(S,P->R->Nam);
-	 break;
-	case 't':
-	 MUnit[2].S=wcscpy(S,P->R->Nam);
-	 break;
-	default:
-	 swprintf(Inf,
-	  L"«адан неизвестный тип размерности %s",P->R->Nam);
-	 Application->MessageBoxA(Inf,I->Name,MB_OK);
-	 free(S);
-  }}
+  (I=FindInstLast(L"–ј«ћ≈–Ќќ—“»"))){
+  List *Lold=L; L=TakeList(L"–ј«ћ≈–Ќќ—“»");
+  bool Err=false; int Ind,D;
+  for(Parm *P=I->First;P;P=P->Sled){ Vary *V; wchar_t *S;
+   if(!(P->R)){//не указан тип m,l,t,a и в скобках размерность
+  Err=true; MessUnits(I->Name); break;
+   }
+   else{
+  if(P->R->Sled){ Err=true; MessUnits(I->Name); break; }
+  D=wcslen(P->R->Nam); S=wcscpy((wchar_t *)calloc(D+1,SzC),P->R->Nam);
+  switch(P->Nam[0]){
+   case 'm':
+    if(wcscmp(P->R->Nam,L"г")&&wcscmp(P->R->Nam,L"кг")&&
+     wcscmp(P->R->Nam,L"т")){
+     Err=true; MessUnits(I->Name); break;
+    }
+    Ind=0; MUnit->S=S;
+    break;
+   case 'l':
+    if(wcscmp(P->R->Nam,L"мм")  &&wcscmp(P->R->Nam,L"см")&&
+     wcscmp(P->R->Nam,L"м")   &&wcscmp(P->R->Nam,L"км")&&
+     wcscmp(P->R->Nam,L"мил€")&&wcscmp(P->R->Nam,L"дм")&&
+     wcscmp(P->R->Nam,L"дюйм")){
+     Err=true; MessUnits(I->Name); break;
+    }
+    Ind=1; MUnit->Sled->S=S;
+    break;
+   case 't':
+    if(wcscmp(P->R->Nam,L"с")  &&wcscmp(P->R->Nam,L"мес€ц")&&
+     wcscmp(P->R->Nam,L"мин")&&wcscmp(P->R->Nam,L"час")&&
+     wcscmp(P->R->Nam,L"год")&&wcscmp(P->R->Nam,L"день")){
+     Err=true; MessUnits(I->Name); break;
+    }
+    Ind=2; MUnit->Sled->Sled->S=S;
+    break;
+   case 'a':
+    if(wcscmp(P->R->Nam,L"рад")&&wcscmp(P->R->Nam,L"∞")){
+     Err=true; MessUnits(I->Name); break;
+    }
+    Ind=3;
+    MUnit->Sled->Sled->Sled->S=S;
+    break;
+   default:
+    Err=true; MessUnits(I->Name); break;
+  }
+  if(Err) break;
+  if(FindVary(P->R->Nam,&V)){ Vary *Vsi;
+   switch(Ind){
+    case  0://m
+     FindVary("кг",&Vsi);
+     break;
+    case  1://l
+     FindVary("м",&Vsi);
+     break;
+    case  2://t
+     FindVary("с",&Vsi);
+     break;
+    case  3://a
+     FindVary("рад",&Vsi);
+     break;
+   }
+   if(V!=Vsi)
+    Vsi->Krazm=1.0/V->Val;
+  }}}
+  L=Lold;
  }
  if(!(I=FindInstLast(L"–јЅќ“ј"))){
   swprintf(Inf,

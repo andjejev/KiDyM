@@ -5,7 +5,7 @@
 #include <math.h>
 #include <values.h>
 
-extern Magazine *MUnit;
+Magazine *MUnit;
 extern wchar_t *ZNAC,SymbMC,SymbMQ,SymbMV,SymbMM;
 
 bool IsError,IsSyntError,ISRAND;

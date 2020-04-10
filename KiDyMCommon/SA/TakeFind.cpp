@@ -326,8 +326,8 @@ Vary *TakeVary(wchar_t *S){ Vary *V;
  W->Name=(wchar_t *)malloc(SzC*(wcslen(S)+1));
  W->Razm.C=Pust;  W->Krazm=1.0;
  if(!(W->Name)){ IsError=true; return NULL; }
- wcscpy(W->Name,S); W->Atr=VARY; W->P=W->Q=1; W->U=0; W->Znach.C=Pust;
-
+ wcscpy(W->Name,S); W->Atr=VARY; W->P=W->Q=1;
+ W->U=0; W->Znach.C=Pust;
  return (V?V->Sled:L->V)=W;
 }
 //---------------------------------------------------------------------------
